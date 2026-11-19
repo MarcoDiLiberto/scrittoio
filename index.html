@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scrittoio — strumenti per chi scrive</title>
+<meta name="description" content="Scena e Foglie: due strumenti gratuiti di scrittura che funzionano nel browser. Sceneggiature in formato professionale e impaginazione sperimentale, con PDF pronti per la stampa.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#12100d;--fg:#f1e9d8;--mut:#a59a86;--line:#2e2924;--red:#d6402f;--red2:#ff6a55;--paper:#fbf7ec;--ink:#1f1b16;
+  --mono:"Courier Prime","Courier New",monospace;--serif:"Instrument Serif",Georgia,serif;--ui:Inter,"Segoe UI",system-ui,sans-serif;
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .25 0 0 0 0 .16 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(1400px 700px at 70% -10%,#2f2721,transparent 65%),var(--noise),var(--desk);color:var(--fg);font:16px/1.6 var(--ui);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+::selection{background:#d6402f55}
+
+/* nav */
+nav{display:flex;align-items:center;justify-content:space-between;padding:26px 0}
+.mark{display:flex;align-items:center;gap:4px;font:26px/1 "Special Elite",var(--mono);text-decoration:none;letter-spacing:.04em}
+.mark::after{content:'';width:12px;height:22px;background:var(--red);margin-left:4px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+nav .links{display:flex;gap:26px;font:500 14px var(--ui);color:var(--mut)}
+nav .links a{text-decoration:none;transition:color .2s}nav .links a:hover{color:var(--fg)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:56px 0 110px}
+.eyebrow{font:700 12px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--red2);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:'';width:34px;height:1px;background:var(--red2)}
+h1{font:400 clamp(52px,7.4vw,104px)/.95 var(--serif);letter-spacing:-.02em;margin:22px 0 26px}
+h1 em{font-style:italic;color:#fff4dc}
+h1 .strike{position:relative;color:var(--mut)}
+h1 .strike::after{content:'';position:absolute;left:-2%;right:-2%;top:54%;height:.07em;background:var(--red);transform:rotate(-2deg)}
+.lead{font-size:19px;line-height:1.6;color:#cfc4ae;max-width:520px;margin:0 0 34px}
+.ctas{display:flex;gap:14px;flex-wrap:wrap}
+.key{display:inline-flex;align-items:center;gap:10px;font:700 15px/1 var(--mono);letter-spacing:.02em;text-decoration:none;color:var(--fg);padding:15px 20px 14px;border-radius:12px;border:1px solid #0a0908;
+  background:linear-gradient(#3c3732,#28241f);box-shadow:inset 0 1px #ffffff26,inset 0 -3px #0007,0 3px 0 #090807,0 10px 22px #000a;transition:transform .08s,box-shadow .08s,background .2s}
+.key:hover{background:linear-gradient(#48423c,#2f2a25)}
+.key:active{transform:translateY(3px);box-shadow:inset 0 1px #ffffff1a,0 0 0 #0000,0 3px 8px #0008}
+.key.red{background:linear-gradient(#e8503f,#b52d20);color:#fff8ef;border-color:#4d0f0a}
+.key.red:hover{background:linear-gradient(#f25b49,#c13322)}
+.key span{font:600 16px/1 var(--ui);transition:transform .2s}.key:hover span{transform:translateX(3px)}
+
+/* macchina da scrivere animata */
+.machine{position:relative;padding-top:30px}
+.roller{position:relative;z-index:3;height:34px;border-radius:18px;margin:0 -18px;background:linear-gradient(#070605,#3b3631 20%,#24211d 46%,#0b0a09 74%,#2a2723);box-shadow:0 14px 22px -8px #000e,inset 0 1px #ffffff1c}
+.roller::before,.roller::after{content:'';position:absolute;top:-4px;width:28px;height:42px;border-radius:8px;background:linear-gradient(90deg,#77736d,#efebe3 35%,#8e8a83 55%,#d4d0c7 80%,#6f6b65);box-shadow:0 5px 10px #0009}
+.roller::before{left:-20px}.roller::after{right:-20px}
+.sheet{position:relative;z-index:2;margin:-12px 14px 0;padding:44px 40px 46px 56px;min-height:390px;color:var(--ink);background:var(--noise),linear-gradient(90deg,#0000000d,#0000 4%,#0000 96%,#0000000d),var(--paper);
+  box-shadow:0 30px 60px -18px #000e;font:15px/1.55 var(--mono);transform:rotate(.6deg);text-shadow:0 0 .6px #1f1b1666}
+.sheet::before{content:'';position:absolute;inset:0;z-index:-1;background:#e9e1cf;transform:translate(9px,8px) rotate(-1.2deg);box-shadow:0 20px 40px #000a}
+.sheet .sl{text-transform:uppercase;font-weight:700}
+.sheet .ch{margin:16px 0 0 34%;text-transform:uppercase}
+.sheet .dl{margin-left:18%;max-width:60%}
+.sheet .pr{margin-left:26%}
+.sheet .tr{text-align:right;text-transform:uppercase;margin-top:16px}
+.sheet p{margin:14px 0 0}
+#typed::after{content:'';display:inline-block;width:.55em;height:1.05em;background:var(--red);vertical-align:-3px;margin-left:1px;animation:blink 1s steps(1) infinite}
+.stamp{position:absolute;right:26px;bottom:24px;font:700 12px var(--mono);letter-spacing:.14em;color:var(--red);border:2px solid var(--red);border-radius:4px;padding:5px 9px;transform:rotate(-7deg);opacity:.85}
+
+/* sezioni */
+section{padding:90px 0}
+.sh{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:46px;border-bottom:1px solid var(--line);padding-bottom:24px}
+.sh h2{font:400 clamp(38px,4.6vw,62px)/1 var(--serif);margin:0;letter-spacing:-.01em}
+.sh h2 em{color:#fff4dc}
+.sh p{max-width:420px;color:var(--mut);margin:0}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.tool{position:relative;display:flex;flex-direction:column;border-radius:18px;overflow:hidden;background:linear-gradient(#1f1b17,#171410);border:1px solid #2c2722;box-shadow:0 30px 60px -30px #000;transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s}
+.tool:hover{transform:translateY(-6px);border-color:#4a3f35}
+.tool .vis{position:relative;height:330px;overflow:hidden;background:radial-gradient(500px 260px at 50% 0,#3a3029,transparent 70%),var(--noise),#191512}
+.tool .body{padding:30px 32px 32px;display:flex;flex-direction:column;gap:16px;flex:1}
+.tool h3{margin:0;font:400 46px/1 var(--serif);display:flex;align-items:baseline;gap:14px}
+.tool h3 small{font:700 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--red2)}
+.tool p{margin:0;color:#c9bea9}
+.tool ul{list-style:none;margin:4px 0 8px;padding:0;display:grid;gap:8px;font-size:14.5px;color:#d9cfbb}
+.tool li{display:flex;gap:10px}
+.tool li::before{content:'▸';color:var(--red2);font-family:var(--mono)}
+.tool .key{align-self:flex-start;margin-top:auto}
+/* anteprima Scena */
+.mini{position:absolute;left:50%;top:38px;width:78%;margin-left:-39%;height:330px;padding:30px 30px 0 44px;background:var(--noise),var(--paper);color:var(--ink);font:11.5px/1.5 var(--mono);box-shadow:0 20px 40px #000c;transform:rotate(-1.5deg);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.tool:hover .mini{transform:rotate(0) translateY(-8px)}
+.tool .mini p{color:var(--ink)}
+.mini .sl{font-weight:700}.mini .ch{margin:10px 0 0 36%}.mini .dl{margin-left:20%;max-width:58%}.mini p{margin:9px 0 0}
+.mini .num{position:absolute;left:14px;color:#b3a487;font-weight:700}
+/* anteprima Foglie */
+.leaves{position:absolute;inset:0;font-family:Georgia,serif;color:var(--ink)}
+.leaf{position:absolute;width:44%;height:250px;top:40px;background:var(--noise),var(--paper);box-shadow:0 20px 40px #000c;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.leaf.l{left:7%;transform:rotate(-4deg)}.leaf.r{right:7%;transform:rotate(3deg)}
+.tool:hover .leaf.l{transform:rotate(-7deg) translateX(-8px)}.tool:hover .leaf.r{transform:rotate(6deg) translateX(8px)}
+.leaf .sq{position:absolute;left:18px;top:22px;width:62px;height:62px;background:#0c0c14}
+.leaf .mir{position:absolute;left:92px;top:22px;right:14px;font-size:8.5px;line-height:1.35;transform:scaleX(-1);color:#3a3328}
+.leaf .st{position:absolute;left:18px;top:102px;right:14px;font-size:9px;line-height:1.4}
+.leaf .st s{color:#c3271b;text-decoration-color:#c3271b}
+.leaf .fade{position:absolute;left:18px;right:14px;top:150px;font-size:8.5px;line-height:1.35;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
+.leaf .w{position:absolute;font-size:10px;white-space:nowrap}
+.leaf .big{position:absolute;font:italic 30px/1 Georgia,serif;left:22px;top:170px;transform:rotate(-12deg);opacity:.85}
+.leaf .blue{position:absolute;left:20px;right:20px;top:70px;height:60px;border:1px solid #2b4fbf;font-size:8px;line-height:1.35;padding:4px;color:#1d2f7a;transform:scaleX(-1)}
+
+/* principi */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cell{background:#16130f;padding:30px 28px}
+.cell b{display:block;font:400 28px/1.1 var(--serif);margin-bottom:10px;color:#fff4dc}
+.cell p{margin:0;color:var(--mut);font-size:15px}
+.cell .n{font:700 11px var(--mono);letter-spacing:.2em;color:var(--red2);margin-bottom:16px;display:block}
+
+/* citazione */
+.quote{text-align:center;padding:110px 0}
+.quote blockquote{margin:0 auto;max-width:880px;font:italic 400 clamp(34px,4.2vw,58px)/1.12 var(--serif);color:#fff4dc}
+.quote blockquote span{color:var(--red2)}
+.quote cite{display:block;margin-top:20px;font:700 12px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mut);font-style:normal}
+
+footer{border-top:1px solid var(--line);padding:34px 0 50px;color:var(--mut);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer .mark{font-size:20px}footer .mark::after{width:9px;height:17px}
+
+.rev{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.rev.in{opacity:1;transform:none}
+@media (max-width:900px){.hero,.tools,.grid3{grid-template-columns:1fr}.hero{padding-top:20px;gap:50px}.sh{flex-direction:column;align-items:start}nav .links{display:none}.sheet{padding:32px 24px 40px 30px;font-size:13.5px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rev{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><a class="mark" href="./">Scrittoio</a><div class="links"><a href="#strumenti">Strumenti</a><a href="#principi">Come funziona</a><a href="scena.html">Scena</a><a href="foglie.html">Foglie</a></div></nav>
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Strumenti per chi scrive</div>
+      <h1>Scrivi come <span class="strike">tutti</span> <em>vuoi tu.</em></h1>
+      <p class="lead">Due programmi leggerissimi che si aprono nel browser: uno per le sceneggiature in formato professionale, uno per libri che rompono la pagina. Niente da installare, niente account, e i tuoi testi non lasciano mai il tuo computer.</p>
+      <div class="ctas"><a class="key red" href="scena.html">Apri Scena <span>→</span></a><a class="key" href="foglie.html">Apri Foglie <span>→</span></a></div>
+    </div>
+    <div class="machine" aria-hidden="true">
+      <div class="roller"></div>
+      <div class="sheet">
+        <div class="sl">INT. STUDIO - NOTTE</div>
+        <p>Una lampada accesa. Un foglio bianco nel rullo. Il cursore aspetta.</p>
+        <div class="ch">LO SCRITTORE</div>
+        <div class="pr">(tra sé)</div>
+        <div class="dl"><span id="typed"></span></div>
+        <div class="tr">Stacco su:</div>
+        <span class="stamp">PAG. 1</span>
+      </div>
+    </div>
+  </header>
+</div>
+
+<section id="strumenti">
+  <div class="wrap">
+    <div class="sh rev"><h2>Due strumenti, <em>una scrivania.</em></h2><p>Ognuno fa una cosa sola, fino in fondo. Entrambi esportano PDF pronti da mandare a un produttore, a un editore o in tipografia.</p></div>
+    <div class="tools">
+      <article class="tool rev">
+        <div class="vis">
+          <div class="mini">
+            <span class="num">1</span><div class="sl">EST. STAZIONE DI PROVINCIA - NOTTE</div>
+            <p>Una pensilina vuota. La pioggia batte sul tetto di lamiera. Un orologio fermo segna le 23:58.</p>
+            <div class="ch">MARCO (F.C.)</div><div class="dl">Il treno delle ventitré e cinquantotto non passa da undici anni.</div>
+            <div class="ch">GIULIA</div><div class="dl">L'orario dice di sì.</div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Scena <small>sceneggiature</small></h3>
+          <p>Scrivi e basta: il formato professionale lo applica lui. Invio e Tab ti portano sempre all'elemento giusto, i suggerimenti completano personaggi e luoghi.</p>
+          <ul>
+            <li>Formato standard: Courier 12, una pagina ≈ un minuto</li>
+            <li>Scaletta a schede, report su personaggi e luoghi, revisioni</li>
+            <li>Apre ed esporta Final Draft (.fdx), Fountain e PDF</li>
+          </ul>
+          <a class="key red" href="scena.html">Apri Scena <span>→</span></a>
+        </div>
+      </article>
+      <article class="tool rev">
+        <div class="vis">
+          <div class="leaves">
+            <div class="leaf l">
+              <div class="sq"></div>
+              <div class="mir">Questo riquadro è rovesciato come in uno specchio: lo si legge solo davanti a una superficie riflettente.</div>
+              <div class="st"><s>Si potrebbe immaginare un capitolo fatto solo di note,</s> e invece eccone una sola.</div>
+              <div class="fade">Il corridoio continua oltre ogni misura possibile e non esiste porta che non si apra su un'altra porta, e un'altra ancora, e un'altra…</div>
+            </div>
+            <div class="leaf r">
+              <span class="w" style="left:20px;top:20px;font-size:14px">poi</span>
+              <span class="w" style="left:42px;top:38px;font-size:13px">le pareti</span>
+              <span class="w" style="left:72px;top:56px;font-size:12px;opacity:.8">si allontanano</span>
+              <span class="w" style="left:102px;top:74px;font-size:10px;opacity:.6">e il soffitto</span>
+              <span class="w" style="left:126px;top:90px;font-size:8px;opacity:.4">sparisce</span>
+              <span class="w" style="left:146px;top:104px;font-size:6px;opacity:.25">del tutto</span>
+              <span class="big">torna</span>
+              <span class="w" style="left:96px;top:196px;font-size:15px;transform:rotate(22deg)">ritorna</span>
+              <span class="w" style="left:40px;top:212px;font-size:9px;transform:rotate(-30deg) scaleX(-1)">perdonami</span>
+            </div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Foglie <small>impaginazione libera</small></h3>
+          <p>Per libri che si comportano come architetture: testo in ogni direzione, in prospettiva, a strati, a forma di labirinto o di qualsiasi immagine.</p>
+          <ul>
+            <li>Rotazioni, specchiature, prospettiva 3D, dissolvenze, livelli</li>
+            <li>Testo dentro forme, immagini fatte di lettere, spirali, accumuli</li>
+            <li>PDF per la stampa con abbondanza, margini e numeri di pagina</li>
+          </ul>
+          <a class="key" href="foglie.html">Apri Foglie <span>→</span></a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="principi">
+  <div class="wrap">
+    <div class="sh rev"><h2>Come <em>funziona.</em></h2><p>Nessun server, nessun abbonamento. Ogni strumento è un solo file che il browser apre e fa girare sul tuo computer.</p></div>
+    <div class="grid3 rev">
+      <div class="cell"><span class="n">01 — PRIVATO</span><b>I testi restano tuoi.</b><p>Niente viene caricato online. Il lavoro si salva nel browser e, con "Salva", in un file sul tuo computer.</p></div>
+      <div class="cell"><span class="n">02 — LEGGERO</span><b>Si apre e basta.</b><p>Nessuna installazione, nessun account. Funziona in Chrome, Edge e Firefox, anche senza connessione una volta aperto.</p></div>
+      <div class="cell"><span class="n">03 — STAMPABILE</span><b>Pronto per chi legge.</b><p>PDF con font incorporati, formati e margini standard: l'editore o il produttore lo apre subito, senza sorprese.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="quote wrap rev">
+  <blockquote>“La pagina bianca non è vuota: <span>aspetta.</span>”</blockquote>
+  <cite>Scrittoio</cite>
+</div>
+
+<footer><div class="wrap"><a class="mark" href="./">Scrittoio</a><span>Strumenti di scrittura gratuiti · <a href="scena.html">Scena</a> · <a href="foglie.html">Foglie</a></span></div></footer>
+
+<script>
+// macchina da scrivere che digita
+(function(){
+  const lines=['Ogni storia comincia così.','Con una riga sola.','E poi un\'altra.'],el=document.getElementById('typed');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=lines.join(' ');return;}
+  let li=0,ci=0,del=false;
+  (function step(){
+    const s=lines[li];
+    if(!del){el.textContent=s.slice(0,++ci);if(ci===s.length){del=true;return setTimeout(step,1700);}return setTimeout(step,55+Math.random()*90);}
+    el.textContent=s.slice(0,--ci);if(ci===0){del=false;li=(li+1)%lines.length;return setTimeout(step,400);}setTimeout(step,22);
+  })();
+})();
+// comparsa allo scorrimento
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.15});
+document.querySelectorAll('.rev').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
