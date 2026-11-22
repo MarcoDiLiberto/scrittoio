@@ -101,6 +101,33 @@ section{padding:90px 0}
 .leaf .big{position:absolute;font:italic 30px/1 Georgia,serif;left:22px;top:170px;transform:rotate(-12deg);opacity:.85}
 .leaf .blue{position:absolute;left:20px;right:20px;top:70px;height:60px;border:1px solid #2b4fbf;font-size:8px;line-height:1.35;padding:4px;color:#1d2f7a;transform:scaleX(-1)}
 
+/* anteprima Crossroads */
+.tool.wide{grid-column:1/-1;flex-direction:row}
+.tool.wide .vis{flex:1.25;height:auto;min-height:340px}
+.tool.wide .body{flex:1}
+.xmap{position:absolute;inset:0;background-image:radial-gradient(circle,#ffffff14 1px,transparent 1.4px);background-size:22px 22px}
+.xmap svg{position:absolute;inset:0;width:100%;height:100%}
+.xmap path{fill:none;stroke:var(--red);stroke-width:2;stroke-dasharray:400;stroke-dashoffset:0;transition:stroke-dashoffset 1.2s ease}
+.xmap path.c{stroke-dasharray:7 5}
+.xc{position:absolute;width:24%;padding:7px 9px 9px;background:var(--noise),var(--paper);color:var(--ink);font:10px/1.35 var(--mono);box-shadow:0 12px 24px -8px #000d;border-radius:2px;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.xc b{display:block;font-size:11px;border-bottom:1px solid #e7a99f;padding-bottom:3px;margin-bottom:4px}
+.xc i{font-style:normal;display:inline-block;margin-top:5px;font:600 8.5px var(--ui);background:#1f1b16;color:var(--paper);border-radius:8px;padding:0 5px}
+.xc .h{position:absolute;right:6px;top:22px;font:700 9px var(--ui);color:#fff;background:#3d8a55;border-radius:8px;padding:0 5px}
+.xc .h.r{background:#b8321f}
+.tool:hover .xc:nth-child(2){transform:translateY(-6px)}.tool:hover .xc:nth-child(4){transform:translateY(5px)}.tool:hover .xc:nth-child(5){transform:translateX(5px)}
+.amap{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#d9e3dc,#a9bcb4 75%);overflow:hidden}
+.amap .isl{position:absolute;background:#e4d6ae;border:3px solid #4a3b26;border-radius:46% 54% 40% 60%/55% 45% 55% 45%;box-shadow:0 0 0 7px #4a3b2614,0 0 0 15px #4a3b260c}
+.amap .pin{position:absolute;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);border:2px solid #fff;box-shadow:0 4px 10px #0007;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.tool:hover .amap .pin{transform:rotate(-45deg) translate(3px,-3px)}
+.amap .lab{position:absolute;font:600 italic 15px var(--serif);color:#3b2c1a;letter-spacing:.1em}
+.amap .page{position:absolute;right:6%;top:12%;width:44%;padding:14px 16px;background:var(--noise),var(--paper);color:var(--ink);box-shadow:0 18px 36px -10px #000c;border-radius:4px;font:11px/1.45 Georgia,serif;transform:rotate(1.5deg);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.tool:hover .amap .page{transform:rotate(0) translateY(-6px)}
+.amap .page b{display:block;font:600 21px var(--serif);margin-bottom:2px}
+.amap .page i{display:inline-block;font:700 8px var(--ui);letter-spacing:.1em;color:#fff;background:#3a73c4;border-radius:8px;padding:1px 7px;font-style:normal;margin-bottom:6px}
+.amap .page u{color:#8a2a1c;text-decoration:none;border-bottom:1px solid #8a2a1c66}
+.amap .page s{display:block;margin-top:7px;padding:5px 7px;border:1px dashed #c0392b88;background:#c0392b0d;text-decoration:none;color:#8a2a1c;font-size:10px}
+.new{font:700 10px var(--mono);letter-spacing:.18em;color:#fff8ef;background:var(--red);border-radius:4px;padding:3px 7px;margin-left:auto;align-self:center}
+
 /* principi */
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .cell{background:#16130f;padding:30px 28px}
@@ -120,20 +147,20 @@ footer .mark{font-size:20px}footer .mark::after{width:9px;height:17px}
 
 .rev{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
 .rev.in{opacity:1;transform:none}
-@media (max-width:900px){.hero,.tools,.grid3{grid-template-columns:1fr}.hero{padding-top:20px;gap:50px}.sh{flex-direction:column;align-items:start}nav .links{display:none}.sheet{padding:32px 24px 40px 30px;font-size:13.5px}}
+@media (max-width:900px){.tool.wide{flex-direction:column}.tool.wide .vis{min-height:300px}.hero,.tools,.grid3{grid-template-columns:1fr}.hero{padding-top:20px;gap:50px}.sh{flex-direction:column;align-items:start}nav .links{display:none}.sheet{padding:32px 24px 40px 30px;font-size:13.5px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rev{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <nav><a class="mark" href="./">Scrittoio</a><div class="links"><a href="#strumenti">Strumenti</a><a href="#principi">Come funziona</a><a href="scena.html">Scena</a><a href="foglie.html">Foglie</a></div></nav>
+  <nav><a class="mark" href="./">Scrittoio</a><div class="links"><a href="#strumenti">Strumenti</a><a href="#principi">Come funziona</a><a href="scena.html">Scena</a><a href="foglie.html">Foglie</a><a href="crossroads.html">Crossroads</a><a href="atlante.html">Atlante</a></div></nav>
 
   <header class="hero">
     <div>
       <div class="eyebrow">Strumenti per chi scrive</div>
       <h1>Scrivi come <span class="strike">tutti</span> <em>vuoi tu.</em></h1>
-      <p class="lead">Due programmi leggerissimi che si aprono nel browser: uno per le sceneggiature in formato professionale, uno per libri che rompono la pagina. Niente da installare, niente account, e i tuoi testi non lasciano mai il tuo computer.</p>
-      <div class="ctas"><a class="key red" href="scena.html">Apri Scena <span>→</span></a><a class="key" href="foglie.html">Apri Foglie <span>→</span></a></div>
+      <p class="lead">Programmi leggerissimi che si aprono nel browser: per le sceneggiature in formato professionale, per libri che rompono la pagina, per storie in cui è il lettore a scegliere, per i mondi in cui ambientarle. Niente da installare, niente account, e i tuoi testi non lasciano mai il tuo computer.</p>
+      <div class="ctas"><a class="key red" href="scena.html">Apri Scena <span>→</span></a><a class="key" href="foglie.html">Apri Foglie <span>→</span></a><a class="key" href="crossroads.html">Apri Crossroads <span>→</span></a><a class="key" href="atlante.html">Apri Atlante <span>→</span></a></div>
     </div>
     <div class="machine" aria-hidden="true">
       <div class="roller"></div>
@@ -152,7 +179,7 @@ footer .mark{font-size:20px}footer .mark::after{width:9px;height:17px}
 
 <section id="strumenti">
   <div class="wrap">
-    <div class="sh rev"><h2>Due strumenti, <em>una scrivania.</em></h2><p>Ognuno fa una cosa sola, fino in fondo. Entrambi esportano PDF pronti da mandare a un produttore, a un editore o in tipografia.</p></div>
+    <div class="sh rev"><h2>Quattro strumenti, <em>una scrivania.</em></h2><p>Ognuno fa una cosa sola, fino in fondo, ed esporta file pronti da mandare a un produttore, a un editore, in tipografia o direttamente ai lettori.</p></div>
     <div class="tools">
       <article class="tool rev">
         <div class="vis">
@@ -207,6 +234,59 @@ footer .mark{font-size:20px}footer .mark::after{width:9px;height:17px}
           <a class="key" href="foglie.html">Apri Foglie <span>→</span></a>
         </div>
       </article>
+      <article class="tool wide rev">
+        <div class="vis">
+          <div class="xmap">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M27 38 Q36 22 39 21" vector-effect="non-scaling-stroke"/>
+              <path d="M27 44 Q36 62 39 66" vector-effect="non-scaling-stroke"/>
+              <path d="M63 24 Q70 20 72 15" vector-effect="non-scaling-stroke"/>
+              <path class="c" d="M63 30 Q70 42 72 50" vector-effect="non-scaling-stroke"/>
+              <path d="M63 70 Q68 76 72 80" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <div class="xc" style="left:4%;top:30%"><b>Inizio</b>La barca tocca la riva. Davanti a te, il faro.</div>
+            <div class="xc" style="left:39%;top:9%"><b>La scalinata</b>🎲 tira 2d6 + coraggio<span class="h">88%</span></div>
+            <div class="xc" style="left:39%;top:57%"><b>La spiaggia</b>Una conchiglia a spirale…<span class="h">61%</span></div>
+            <div class="xc" style="left:72%;top:4%"><b>Spegnere</b>Soffi piano.<br><i>⚑ fine</i><span class="h">45%</span></div>
+            <div class="xc" style="left:72%;top:42%"><b>La conchiglia</b>se ha("conchiglia")<span class="h">11%</span></div>
+            <div class="xc" style="left:72%;top:74%"><b>Il buio</b>La lanterna si spegne.<br><i>⚑ fine</i><span class="h r">2%</span></div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>Crossroads <small>storie a bivi</small><span class="new">NUOVO</span></h3>
+          <p>Per librigame, narrativa interattiva e dialoghi di videogiochi: disegni la storia come una mappa di schede collegate dal filo rosso, e la giochi mentre la scrivi.</p>
+          <ul>
+            <li>Variabili, inventario, dadi e condizioni scritti in italiano</li>
+            <li>Simula mille partite: finali impossibili, blocchi e passaggi mai visti</li>
+            <li>Esporta un gioco HTML, un librogame numerato da stampare, Twine e JSON</li>
+          </ul>
+          <a class="key red" href="crossroads.html">Apri Crossroads <span>→</span></a>
+        </div>
+      </article>
+      <article class="tool wide rev">
+        <div class="body">
+          <h3>Atlante <small>mondi e ambientazioni</small><span class="new">NUOVO</span></h3>
+          <p>Il wiki del tuo mondo, per campagne di gioco di ruolo, manuali d'ambientazione e videogiochi: pagine collegate tra loro, mappe con puntine ovunque, immagini di riferimento e segreti che solo il master vede.</p>
+          <ul>
+            <li>Mappe annidate: mondo, regione, città, dungeon; regioni, scala, giorni di viaggio</li>
+            <li>Schede con campi per tipo, relazioni, cronologia con controllo di continuità</li>
+            <li>Esporta un sito per i giocatori senza spoiler, un manuale PDF e JSON per i giochi</li>
+          </ul>
+          <a class="key red" href="atlante.html">Apri Atlante <span>→</span></a>
+        </div>
+        <div class="vis">
+          <div class="amap">
+            <div class="isl" style="left:6%;top:20%;width:34%;height:46%"></div>
+            <div class="isl" style="left:24%;top:70%;width:16%;height:18%"></div>
+            <div class="isl" style="left:44%;top:66%;width:11%;height:14%"></div>
+            <span class="lab" style="left:9%;top:72%">Mare di Cenere</span>
+            <span class="pin" style="--c:#3a73c4;left:18%;top:36%"></span>
+            <span class="pin" style="--c:#8a55b8;left:27%;top:30%"></span>
+            <span class="pin" style="--c:#c0392b;left:30%;top:73%"></span>
+            <div class="page"><b>Porto Cenere</b><i>🏰 LUOGO</i><br>Città su palafitte di pietra pomice. Di notte ogni casa tiene una lanterna alla finestra: è la legge della <u>Lega dei Fanali</u>.<s>🔒 SEGRETO — Le lanterne non guidano le navi: tengono lontana la Marea Nera.</s></div>
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -227,7 +307,7 @@ footer .mark{font-size:20px}footer .mark::after{width:9px;height:17px}
   <cite>Scrittoio</cite>
 </div>
 
-<footer><div class="wrap"><a class="mark" href="./">Scrittoio</a><span>Strumenti di scrittura gratuiti · <a href="scena.html">Scena</a> · <a href="foglie.html">Foglie</a></span></div></footer>
+<footer><div class="wrap"><a class="mark" href="./">Scrittoio</a><span>Strumenti di scrittura gratuiti · <a href="scena.html">Scena</a> · <a href="foglie.html">Foglie</a> · <a href="crossroads.html">Crossroads</a> · <a href="atlante.html">Atlante</a></span></div></footer>
 
 <script>
 // macchina da scrivere che digita
