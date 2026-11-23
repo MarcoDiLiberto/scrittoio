@@ -116,6 +116,28 @@ body.scnum #ed .t-scene::before{content:counter(sc);position:absolute;left:-0.75
 #pop div{padding:5px 9px;border-radius:3px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #pop div.on{background:var(--red);color:#fff8ef}
 #pop .h{font:600 10px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#9a8e78;padding:4px 9px 6px;cursor:default;border-bottom:1px dashed #d8ccb3;margin-bottom:3px}
+/* --- dialogo doppio: due colonne --- */
+#ed .dA.t-character{margin-left:8ch;width:20ch;--ind:8ch}
+#ed .dA.t-paren{margin-left:4ch;width:22ch;--ind:4ch}
+#ed .dA.t-dialogue{margin-left:0;width:28ch;--ind:0ch}
+#ed .dB.t-character{margin-left:40ch;width:20ch;--ind:40ch}
+#ed .dB.t-paren{margin-left:36ch;width:22ch;--ind:36ch}
+#ed .dB.t-dialogue{margin-left:32ch;width:28ch;--ind:32ch}
+#ed .dA,#ed .dB{box-shadow:inset 0 0 0 9999px #4aa3df0d}
+#ed .dB.t-character::before{content:'⇆';position:absolute;left:-3ch;color:var(--red);font-weight:700}
+/* --- post-it di spiegazione --- */
+#gloss{position:fixed;z-index:60;display:none;width:320px;padding:18px 18px 14px;color:#2a241c;font:13px/1.5 var(--ui);pointer-events:none;
+  background:var(--noise),linear-gradient(#fff6b8,#fbe98a);box-shadow:0 2px 2px #0002,0 20px 34px -12px #000c;transform:rotate(-1.2deg);border-radius:1px 1px 3px 14px}
+#gloss::before{content:'';position:absolute;top:-10px;left:50%;width:90px;height:22px;margin-left:-45px;background:#ffffffa0;transform:rotate(2.5deg);box-shadow:0 1px 3px #0002}
+#gloss b{display:block;font:700 14px/1.25 var(--mono);text-transform:uppercase;letter-spacing:.03em}
+#gloss small{display:block;font:600 10px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:#9a7a1a;margin:2px 0 8px}
+#gloss p{margin:0 0 8px}
+#gloss .ex{font:500 19px/1.15 Caveat,"Segoe Print",cursive;color:#1d3f8a;margin:6px 0 0;padding-top:8px;border-top:1px dashed #c9ab3a}
+#gloss .ex i{font:600 10px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:#9a7a1a;font-style:normal;display:block;margin-bottom:2px}
+.gl{display:grid;grid-template-columns:200px 1fr;gap:10px 18px;font-size:13px;line-height:1.5}
+.gl b{font:700 12.5px var(--mono);text-transform:uppercase}
+.gl .ex{font:500 17px/1.2 Caveat,"Segoe Print",cursive;color:#1d3f8a;display:block;margin-top:3px}
+body.en #ed.empty .el::after{content:'Write the first scene, e.g. INT. KITCHEN - NIGHT'}
 
 /* --- contatori meccanici --- */
 footer{height:32px;flex:none;display:flex;gap:22px;align-items:center;padding:0 14px;background:linear-gradient(#1f1c19,#141210);border-top:1px solid #000;box-shadow:inset 0 1px #ffffff0d;color:var(--mut);font:12px var(--mono);white-space:nowrap;overflow:hidden}
@@ -217,7 +239,7 @@ kbd{display:inline-block;background:#fff;border:1px solid #cfc3aa;border-bottom-
   <div class="grp"><select id="elType" title="Elemento corrente (Alt+1…8)"></select></div>
   <div class="grp"><button id="bCards" title="Scaletta a schede">Scaletta</button><button id="bPreview" class="pri" title="Anteprima di stampa e PDF (Ctrl+P)">Anteprima</button><button id="bReport" hidden>Report</button></div>
   <div class="grp"><button id="bFind" title="Trova e sostituisci (Ctrl+F / Ctrl+H)">Trova</button><button id="bNote" title="Nota sull'elemento (Ctrl+M)">Nota</button><button id="bRename" hidden>Rinomina</button><button id="bTitle" hidden>Titolo</button>
-    <select id="bMore" title="Altri strumenti"><option value="">Altro…</option><option value="bReport">Report e statistiche</option><option value="bRename">Rinomina personaggio</option><option value="bTitle">Frontespizio</option></select></div>
+    <select id="bMore" title="Altri strumenti"><option value="">Altro…</option><option value="dual">Dialogo doppio (Ctrl+D)</option><option value="bReport">Report e statistiche</option><option value="bRename">Rinomina personaggio</option><option value="bTitle">Frontespizio</option></select></div>
   <div class="grp"><button id="bSet" title="Impostazioni: formato, convenzioni, numeri di scena, revisioni">⚙</button><button id="bFocus" title="Modalità concentrazione: nasconde tutto tranne il foglio (Ctrl+.)">Focus</button><button id="bSound" title="Suoni della macchina da scrivere">♪</button></div>
   <div class="grp"><button id="bHelp" title="Guida e scorciatoie">?</button></div>
 </header>
@@ -261,6 +283,8 @@ kbd{display:inline-block;background:#fff;border:1px solid #cfc3aa;border-bottom-
 <dialog id="dSet"><form method="dialog">
   <h3>Impostazioni</h3>
   <div class="g2">
+    <label>Lingua dell'interfaccia<select id="sUi"><option value="it">Italiano</option><option value="en">English</option></select></label>
+    <span></span>
     <label>Formato carta<select id="sPaper"><option value="letter">Letter USA (standard internazionale)</option><option value="a4">A4</option></select></label>
     <label>Convenzioni<select id="sLang"><option value="it">Italiane (INT./EST., GIORNO/NOTTE, CONT.)</option><option value="en">Inglesi (INT./EXT., DAY/NIGHT, CONT'D)</option></select></label>
     <label class="chk"><input type="checkbox" id="sNums"> Numeri di scena</label>
@@ -275,7 +299,7 @@ kbd{display:inline-block;background:#fff;border:1px solid #cfc3aa;border-bottom-
   <div class="note">Con le revisioni attive, ogni elemento che modifichi viene segnato con un asterisco nel margine destro, come si fa sui set. Il nome della revisione compare in testa alle pagine stampate.</div>
   <div class="g2" style="margin-top:6px">
     <label class="chk"><input type="checkbox" id="sRev"> Segna le modifiche</label>
-    <label>Nome revisione<select id="sRevName"><option>Blu</option><option>Rosa</option><option>Gialla</option><option>Verde</option><option>Oro</option><option>Bianca 2</option></select></label>
+    <label>Nome revisione<select id="sRevName"><option value="Blu">Blu</option><option value="Rosa">Rosa</option><option value="Gialla">Gialla</option><option value="Verde">Verde</option><option value="Oro">Oro</option><option value="Bianca 2">Bianca 2</option></select></label>
   </div>
   <div class="btns"><button type="button" id="sClearRev">Cancella tutti i segni di revisione</button><span style="flex:1"></span><button value="cancel">Annulla</button><button value="ok" class="pri">Applica</button></div>
 </form></dialog>
@@ -316,25 +340,8 @@ kbd{display:inline-block;background:#fff;border:1px solid #cfc3aa;border-bottom-
 </form></dialog>
 
 <dialog id="dHelp"><form method="dialog">
-  <h3>Scrivere con Scena</h3>
-  <div class="keys">
-    <kbd>Invio</kbd><span>nuovo elemento, già del tipo giusto: dopo la scena l'azione, dopo il personaggio il dialogo, dopo il dialogo il prossimo personaggio…</span>
-    <kbd>Tab</kbd><span>cambia elemento: Azione → Personaggio → Transizione → Scena; Dialogo ⇄ Parentetica. <kbd>Maiusc+Tab</kbd> torna indietro.</span>
-    <kbd>Alt+1…8</kbd><span>Scena · Azione · Personaggio · Parentetica · Dialogo · Transizione · Inquadratura · Centrato</span>
-    <kbd>Invio su vuoto</kbd><span>un personaggio/dialogo vuoto diventa Azione</span>
-    <kbd>↑ ↓ Invio Tab</kbd><span>scelgono dai suggerimenti automatici (personaggi, luoghi, momenti, transizioni, estensioni come (F.C.) e (V.O.))</span>
-    <kbd>(</kbd><span>all'inizio di un dialogo crea una parentetica</span>
-    <span></span><span>Scrivi <b>INT.</b> o <b>EST.</b> all'inizio di un'azione e diventa intestazione di scena. Scrivi <b>STACCO SU:</b> e premi Invio: diventa transizione.</span>
-    <kbd>Ctrl+B / I / U</kbd><span>grassetto, corsivo, sottolineato</span>
-    <kbd>Ctrl+F / Ctrl+H</kbd><span>trova / sostituisci</span>
-    <kbd>Ctrl+G</kbd><span>vai alla pagina</span>
-    <kbd>Ctrl+M</kbd><span>nota sull'elemento corrente</span>
-    <kbd>Ctrl+P</kbd><span>anteprima di stampa / PDF</span>
-    <kbd>Ctrl+S</kbd><span>salva il progetto (.scena)</span>
-    <kbd>Ctrl+.</kbd><span>modalità concentrazione</span>
-    <kbd>Incolla</kbd><span>incollando un copione in testo semplice (anche da PDF o in formato Fountain) viene riconosciuto e formattato.</span>
-  </div>
-  <p class="note">Formato standard: Courier 12, margini industriali, circa 1 pagina = 1 minuto. Il file <b>.fdx</b> si apre in Final Draft; il <b>.fountain</b> in Highland, WriterDuet, Fade In, Slugline e molti altri.</p>
+  <div id="helpBody"></div>
+  
   <div class="btns"><button value="ok" class="pri">Ok</button></div>
 </form></dialog>
 
@@ -365,7 +372,7 @@ const TAB_NEXT={action:'character',character:'transition',transition:'scene',sce
 const TAB_PREV={action:'scene',character:'action',transition:'character',scene:'transition',dialogue:'character',paren:'dialogue',shot:'scene',centered:'action'};
 const LANG={
   it:{pre:['INT.','EST.','INT./EST.','EST./INT.'],times:['GIORNO','NOTTE','MATTINA','POMERIGGIO','SERA','ALBA','TRAMONTO','CONTINUO','PIÙ TARDI','STESSO MOMENTO'],
-      trans:['STACCO SU:','STACCO A:','DISSOLVENZA IN:','DISSOLVENZA INCROCIATA:','DISSOLVENZA A NERO.','TAGLIO NETTO SU:','RACCORDO SU:','FINE.'],
+      trans:['STACCO SU:','DISSOLVENZA IN:','DISSOLVENZA INCROCIATA:','DISSOLVENZA A NERO.','TAGLIO NETTO SU:','RACCORDO SU:','FINE.'],
       ext:['(F.C.)','(V.O.)','(CONT.)','(AL TELEFONO)','(SEGUE)'],more:'(CONTINUA)',contd:'(CONT.)'},
   en:{pre:['INT.','EXT.','INT./EXT.','EXT./INT.','I/E.'],times:['DAY','NIGHT','MORNING','AFTERNOON','EVENING','DAWN','DUSK','CONTINUOUS','LATER','MOMENTS LATER'],
       trans:['CUT TO:','DISSOLVE TO:','SMASH CUT TO:','MATCH CUT TO:','FADE IN:','FADE OUT.','FADE TO BLACK.','THE END'],
@@ -377,6 +384,118 @@ const COLORS=['','#e05a5a','#e9973f','#e6c84a','#59b56b','#4aa3df','#8e6bd8','#d
 let doc=null, S=null, PG=null, model=[], zoom=1, fileHandle=null, navTab='scenes';
 function defaults(){return{paper:'letter',lang:'it',sceneNums:true,boldScenes:false,dbl:false,contd:true,more:true,dark:false,typewriter:false,rev:false,revName:'Blu',sound:false};}
 const L=()=>LANG[S.lang]||LANG.it;
+
+/* ---------------- lingua dell'interfaccia ---------------- */
+let uiLang='it';try{uiLang=localStorage.getItem('scena-ui')==='en'?'en':'it';}catch(e){}
+const _t=(it,en)=>uiLang==='en'?en:it;
+const TYPE_EN={Scena:'Scene',Azione:'Action',Personaggio:'Character',Parentetica:'Parenthetical',Dialogo:'Dialogue',Transizione:'Transition',Inquadratura:'Shot',Centrato:'Centered'};
+const I18N={
+ 'Torna allo scrittoio':'Back to Scrittoio','Nuovo':'New','Esempio':'Sample','Apre una sceneggiatura di esempio con note che spiegano ogni elemento':'Opens a sample screenplay with notes explaining every element',
+ 'Apri…':'Open…','Apre .scena, .fdx (Final Draft), .fountain, .txt':'Opens .scena, .fdx (Final Draft), .fountain, .txt','Salva':'Save','Esporta…':'Export…','PDF (stampa)':'PDF (print)','Testo impaginato (.txt)':'Formatted text (.txt)',
+ 'Annulla (Ctrl+Z)':'Undo (Ctrl+Z)','Ripeti (Ctrl+Y)':'Redo (Ctrl+Y)','Elemento corrente (Alt+1…8)':'Current element (Alt+1…8)','Scaletta':'Outline','Scaletta a schede':'Index-card outline',
+ 'Anteprima':'Preview','Anteprima di stampa e PDF (Ctrl+P)':'Print preview and PDF (Ctrl+P)','Trova':'Find','Trova e sostituisci (Ctrl+F / Ctrl+H)':'Find and replace (Ctrl+F / Ctrl+H)',
+ 'Nota':'Note',"Nota sull'elemento (Ctrl+M)":'Note on this element (Ctrl+M)','Rinomina':'Rename','Titolo':'Title','Altri strumenti':'More tools','Altro…':'More…',
+ 'Dialogo doppio (Ctrl+D)':'Dual dialogue (Ctrl+D)','Report e statistiche':'Reports and statistics','Rinomina personaggio':'Rename character','Frontespizio':'Title page',
+ 'Impostazioni: formato, convenzioni, numeri di scena, revisioni':'Settings: paper, conventions, scene numbers, revisions','Modalità concentrazione: nasconde tutto tranne il foglio (Ctrl+.)':'Focus mode: hides everything but the page (Ctrl+.)',
+ 'Suoni della macchina da scrivere':'Typewriter sounds','Guida e scorciatoie':'Guide and shortcuts','Scene':'Scenes','Personaggi':'Characters','Note':'Notes',
+ 'trascina le schede per riordinare le scene · scrivi il riassunto direttamente sulla scheda':'drag the cards to reorder scenes · write the summary right on the card','+ Nuova scena in fondo':'+ New scene at the end','Torna al copione':'Back to the script',
+ 'Stampa / Salva PDF':'Print / Save PDF','Chiudi anteprima':'Close preview','Rimpicciolisci il foglio':'Zoom out','Ingrandisci il foglio':'Zoom in','Annulla':'Cancel',
+ 'Dicitura autore':'Credit','Scritto da':'Written by','Autore / autori':'Author(s)','Tratto da (facoltativo)':'Based on (optional)','Bozza / data':'Draft / date','Prima stesura — 18/11/2026':'First draft — 11/18/2026','Contatti':'Contact','Stampa il frontespizio':'Print the title page',
+ 'Impostazioni':'Settings',"Lingua dell'interfaccia":'Interface language','Formato carta':'Paper size','Letter USA (standard internazionale)':'US Letter (international standard)','Convenzioni':'Script conventions',
+ 'Italiane (INT./EST., GIORNO/NOTTE, CONT.)':'Italian (INT./EST., GIORNO/NOTTE, CONT.)',"Inglesi (INT./EXT., DAY/NIGHT, CONT'D)":"English (INT./EXT., DAY/NIGHT, CONT'D)",'Numeri di scena':'Scene numbers','Intestazioni di scena in grassetto':'Bold scene headings',
+ 'Doppia riga prima delle scene':'Double space before scenes','(CONT.) automatico se lo stesso personaggio riprende a parlare':"Automatic (CONT'D) when the same character speaks again",'(CONTINUA) e (CONT.) quando un dialogo passa alla pagina dopo':"(MORE) and (CONT'D) when dialogue breaks across pages",
+ 'Pagina scura':'Dark page','Scrittura "macchina da scrivere" (riga corrente sempre al centro)':'Typewriter scrolling (current line always centered)','Revisioni':'Revisions',
+ 'Con le revisioni attive, ogni elemento che modifichi viene segnato con un asterisco nel margine destro, come si fa sui set. Il nome della revisione compare in testa alle pagine stampate.':'With revisions on, every element you change gets an asterisk in the right margin, as on a real production. The revision name appears at the top of printed pages.',
+ 'Segna le modifiche':'Mark changes','Nome revisione':'Revision name','Blu':'Blue','Rosa':'Pink','Gialla':'Yellow','Verde':'Green','Oro':'Goldenrod','Bianca 2':'Double white','Cancella tutti i segni di revisione':'Clear all revision marks','Applica':'Apply',
+ 'Trova e sostituisci':'Find and replace','Sostituisci con':'Replace with','Maiuscole/minuscole esatte':'Match case','Solo parole intere':'Whole words only','Trova successivo':'Find next','Sostituisci':'Replace','Sostituisci tutto':'Replace all','Chiudi':'Close',
+ 'Appunti, dubbi, idee… Le note non vengono stampate.':'Notes, doubts, ideas… Notes are never printed.','Elimina nota':'Delete note','Nuovo nome':'New name','Anche dentro azioni e dialoghi (parola intera)':'Also inside action and dialogue (whole word)',
+ 'Niente da annullare':'Nothing to undo','Suoni attivi: clic per spegnere':'Sounds on: click to turn off','Suoni della macchina da scrivere: clic per accendere':'Typewriter sounds: click to turn on',
+ 'Pagina':'Page','Durata':'Length','min circa':'min approx.','Parole':'Words',"Nessuna scena. Scrivi INT. o EST. all'inizio di una riga.":'No scenes yet. Start a line with INT. or EXT.',
+ 'Trascina una scena per spostarla. Lunghezza in ottavi di pagina.':'Drag a scene to move it. Length in eighths of a page.','Nessun personaggio ancora.':'No characters yet.','Clic ripetuti: va alla battuta successiva':'Click again to jump to the next line',
+ 'Nessuna nota. Mettiti su un elemento e premi Ctrl+M (o "Nota").':'No notes. Put the cursor on an element and press Ctrl+M (or "Note").','(senza intestazione)':'(no heading)','Scena spostata':'Scene moved',
+ 'Riassunto della scena…':'Scene summary…','colore':'color','nessun colore':'no color','apri ›':'open ›','Nessuna scena. Aggiungine una.':'No scenes. Add one.',
+ 'Impossibile aprire il file':"Can't open the file",'Esportato per Final Draft':'Exported for Final Draft','Esportato in Fountain':'Exported to Fountain','Il copione attuale verrà sostituito (salvalo prima se serve).':'The current script will be replaced (save it first if you need it).','Apri':'Open',
+ 'Mettiti prima su un elemento del copione':'Put the cursor on a script element first','(vuoto)':'(empty)','Frontespizio aggiornato':'Title page updated','Segni di revisione':'Revision marks',
+ 'Togliere tutti gli asterischi di revisione dal copione?':'Remove all revision asterisks from the script?','Togli':'Remove','Segni di revisione cancellati':'Revision marks cleared','Nessun personaggio':'No characters','Nessun risultato':'No results',
+ 'Sceneggiatura di esempio':'Sample screenplay',"Il copione attuale verrà sostituito dall'esempio. Se non l'hai salvato su file, salvalo prima.":"The current script will be replaced by the sample. If you haven't saved it to a file, do it first.","Apri l'esempio":'Open the sample',
+ 'Le parti evidenziate in giallo hanno una nota: elenco nella scheda "Note"':'Parts highlighted in yellow have a note: see the "Notes" tab','Nuovo copione':'New script',
+ "Il copione attuale verrà sostituito da una pagina bianca. Se non l'hai salvato su file, salvalo prima.":"The current script will be replaced by a blank page. If you haven't saved it to a file, do it first.",'Crea nuovo copione':'Create new script',
+ 'Nuovo copione: inizia scrivendo INT. o EST.':'New script: start by typing INT. or EXT.','Suoni della macchina da scrivere attivi':'Typewriter sounds on','Vai alla pagina':'Go to page','Vai':'Go'};
+const I18R=[
+ [/^(\d+) elementi riconosciuti e formattati$/,'$1 elements recognized and formatted'],[/^di (\d+)$/,'of $1'],[/^revisione (.+) attiva$/,'$1 revision on'],
+ [/^· Invio → (\S+) · Tab → (\S+)$/,(m,a,b)=>`· Enter → ${TYPE_EN[a]||a} · Tab → ${TYPE_EN[b]||b}`],[/^(\S+)(\s+)\(Alt\+(\d)\)$/,(m,a,s,d)=>`${TYPE_EN[a]||a}${s}(Alt+${d})`],
+ [/^(\d+) batt\. · (\d+) sc\.$/,'$1 lines · $2 sc.'],[/^(\d+)\. \(senza intestazione\)$/,'$1. (no heading)'],[/^Scaricato (.+)$/,'Downloaded $1'],[/^Salvato: (.+)$/,'Saved: $1'],[/^Aperto: (.+)$/,'Opened: $1'],
+ [/^Aprire (.+)\?$/,'Open $1?'],[/^(Scena|Azione|Personaggio|Parentetica|Dialogo|Transizione|Inquadratura|Centrato): ([\s\S]*)$/,(m,a,b)=>`${TYPE_EN[a]}: ${b==='(vuoto)'?'(empty)':b}`],
+ [/^(\d+) sostituzioni: (.+) → (.+)$/,'$1 replacements: $2 → $3'],[/^(\d+) sostituzioni$/,'$1 replacements'],[/^Trovato a pagina (\d+)$/,'Found on page $1'],[/^Numero di pagina \(1–(\d+)\):$/,'Page number (1–$1):'],[/^PAG\. (\d+)$/,'PAGE $1']];
+Object.assign(I18N,{'scene':'scenes','personaggi parlanti':'speaking characters','parole':'words','interni / esterni':'interiors / exteriors','giorno / notte':'day / night','lunghezza media scena':'average scene length','luoghi':'locations',
+ 'Nome':'Name','Battute':'Lines','Entra a p.':'First on p.','Luoghi':'Locations','Luogo':'Location','Pagine':'Pages','Intestazione':'Heading','Pag.':'Page'});
+I18R.push([/^pagine · ~(\d+) min$/,'pages · ~$1 min']);
+const I18_SKIP='#ed,#pvPages,#printRoot,#helpBody,#gloss,#pop';
+const I18_ORIG=new WeakMap();
+function trText(s){const m=String(s).match(/^(\s*)([\s\S]*?)(\s*)$/),core=m[2];if(!core)return null;let r=I18N[core];if(r==null&&TYPE_EN[core])r=TYPE_EN[core];
+  if(r==null)for(const[re,to]of I18R){if(re.test(core)){r=core.replace(re,to);break;}}return r==null?null:m[1]+r+m[3];}
+const I18_DONE=new WeakMap();
+function trAttrs(el){for(const a of['title','placeholder']){if(!el.hasAttribute||!el.hasAttribute(a))continue;const k='i18n'+a;
+  if(uiLang==='en'){const v=el.getAttribute(a);if(el.dataset[k+'t']===v)continue;const r=trText(v);if(r!=null&&r!==v){el.dataset[k]=v;el.dataset[k+'t']=r;el.setAttribute(a,r);}}
+  else if(el.dataset[k]!=null){if(el.getAttribute(a)===el.dataset[k+'t'])el.setAttribute(a,el.dataset[k]);delete el.dataset[k];delete el.dataset[k+'t'];}}}
+function trNode(n){if(n.nodeType===3){const p=n.parentElement;if(!p||p.closest(I18_SKIP))return;
+    if(uiLang==='en'){if(I18_DONE.get(n)===n.data)return;const r=trText(n.data);if(r!=null&&r!==n.data){I18_ORIG.set(n,n.data);I18_DONE.set(n,r);n.data=r;}}
+    else{const o=I18_ORIG.get(n);if(o!=null&&I18_DONE.get(n)===n.data)n.data=o;I18_ORIG.delete(n);I18_DONE.delete(n);}return;}
+  if(n.nodeType!==1||n.closest(I18_SKIP))return;trAttrs(n);for(const c of n.childNodes)trNode(c);}
+new MutationObserver(ms=>{if(uiLang!=='en')return;for(const m of ms){if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trAttrs(m.target);else m.addedNodes.forEach(trNode);}})
+  .observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','placeholder']});
+function applyUi(){document.documentElement.lang=uiLang;document.body.classList.toggle('en',uiLang==='en');trNode(document.body);renderHelp();hideGloss();}
+
+/* ---------------- glossario: transizioni e situazioni comuni ---------------- */
+const GLOSS=[
+ {k:['STACCO SU:','STACCO A:','CUT TO:'],it:{n:'Stacco',d:"Il passaggio normale da un'inquadratura o da una scena all'altra, senza effetti. «Stacco a» è la stessa cosa. Oggi molti non lo scrivono più: una nuova intestazione di scena implica già lo stacco. Usalo quando vuoi sottolineare il cambio.",x:"Lei chiude la porta. STACCO SU: la stessa porta, vista da fuori, sotto la pioggia."},
+   en:{n:'Cut',d:"The plain change from one shot or scene to the next, with no effect. Many writers no longer write it: a new scene heading already implies the cut. Use it when you want to stress the change.",x:"She shuts the door. CUT TO: the same door, from outside, in the rain."}},
+ {k:['TAGLIO NETTO SU:','SMASH CUT TO:'],it:{n:'Taglio netto',d:"Uno stacco brusco e voluto, che crea shock o contrasto (spesso comico): da una scena tranquilla a una violenta, da una promessa alla sua smentita.",x:"«Non andrò mai a quella festa!» TAGLIO NETTO SU: lei alla festa, con un cappello di carta in testa."},
+   en:{n:'Smash cut',d:"An abrupt, deliberate cut that creates shock or (often comic) contrast: from calm to chaos, from a promise to its denial.",x:"\"I'm never going to that party!\" SMASH CUT TO: her at the party, wearing a paper hat."}},
+ {k:['RACCORDO SU:','MATCH CUT TO:'],it:{n:'Raccordo',d:"Collega due inquadrature diverse grazie a una forma, un movimento o un suono simile, per legare due idee o saltare nel tempo.",x:"2001: Odissea nello spazio: un osso lanciato in aria diventa un'astronave. Lawrence d'Arabia: un fiammifero soffiato diventa l'alba nel deserto."},
+   en:{n:'Match cut',d:"Links two different shots through a similar shape, movement or sound, to connect two ideas or leap through time.",x:"2001: A Space Odyssey: a bone thrown in the air becomes a spaceship. Lawrence of Arabia: a blown-out match becomes sunrise in the desert."}},
+ {k:['DISSOLVENZA IN:','FADE IN:'],it:{n:'Dissolvenza in apertura',d:"L'immagine emerge dal nero. Tradizionalmente apre il film o un episodio, ed è la prima riga del copione.",x:"DISSOLVENZA IN: una stazione sotto la pioggia."},
+   en:{n:'Fade in',d:"The picture emerges from black. Traditionally it opens the film or episode and is the first line of the script.",x:"FADE IN: a train station in the rain."}},
+ {k:['DISSOLVENZA INCROCIATA:','DISSOLVE TO:'],it:{n:'Dissolvenza incrociata',d:"Un'immagine sfuma lentamente nella successiva. Suggerisce un passaggio di tempo o un legame emotivo tra due momenti.",x:"Una candela appena accesa. DISSOLVENZA INCROCIATA: la stessa candela, consumata fino in fondo."},
+   en:{n:'Dissolve',d:"One image slowly blends into the next. It suggests time passing or an emotional link between two moments.",x:"A freshly lit candle. DISSOLVE TO: the same candle, burned down to the end."}},
+ {k:['DISSOLVENZA A NERO.','FADE OUT.','FADE TO BLACK.'],it:{n:'Dissolvenza a nero',d:"L'immagine si spegne nel nero. Chiude un film, un episodio o un grande blocco di racconto.",x:"Il treno sparisce nella nebbia. DISSOLVENZA A NERO."},
+   en:{n:'Fade out',d:"The picture fades to black. It closes a film, an episode or a big section of the story.",x:"The train vanishes into the fog. FADE OUT."}},
+ {k:['FINE.','FINE','THE END','THE END.'],it:{n:'Fine',d:"L'ultima riga del copione. Spesso si scrive centrata invece che come transizione.",x:"FINE"},en:{n:'The end',d:"The last line of the script. Often centered rather than written as a transition.",x:"THE END"}}];
+const SITUATIONS={
+ it:[['All\'unisono','Due o più personaggi dicono la stessa battuta: nomi uniti da & nel personaggio, più la parentetica (insieme).','ANNA & PIETRO / (insieme) / Quello non è in orario.'],
+  ['Dialogo doppio','Due personaggi parlano nello stesso momento con battute diverse: le due battute vengono stampate affiancate. Mettiti sulla seconda battuta e premi Ctrl+D (o Altro… → Dialogo doppio).','ANNA e PIETRO al telefono, uno sopra l\'altro.'],
+  ['Telefono, video, diretta','Le voci che arrivano da un dispositivo prendono un\'estensione: (AL TELEFONO), (ALLA RADIO), (IN TV). Ciò che si vede su uno schermo si introduce con un\'inquadratura: SUL MONITOR, SULLO SCHERMO DEL TELEFONO.','SUL MONITOR — in bianco e nero, un treno fermo al binario uno.'],
+  ['Montaggio alternato (intercut)','Per alternare due luoghi (una telefonata, una diretta): presenta i due luoghi con le loro intestazioni, poi scrivi MONTAGGIO ALTERNATO - LUOGO A / LUOGO B e continua senza ripetere le intestazioni. Chiudi con FINE MONTAGGIO ALTERNATO.','MONTAGGIO ALTERNATO - CENTRALE / STAZIONE'],
+  ['Chiacchiericcio','Il brusio di fondo si descrive nell\'azione: non servono battute. Se vuoi far sentire qualche frase, usa un personaggio collettivo: VOCI, AVVENTORI, FOLLA.','Il bar è pieno: un brusio di voci e bicchieri.'],
+  ['Parentetiche','Brevissime, in minuscolo: come viene detta la battuta (sottovoce), a chi (a Marco), una pausa (pausa), un piccolo gesto (accendendo la sigaretta). Le azioni lunghe vanno nell\'azione.','MARCO / (piano) / Io lo so.'],
+  ['Momento sconosciuto','Il momento nell\'intestazione segue il tempo della storia, non la luce che si vede: una stanza buia di giorno resta GIORNO, e il buio lo racconti nell\'azione. Se non conta, puoi ometterlo. CONTINUO = la scena segue senza salti.','INT. CAMERA - GIORNO / Buio totale. Una lama di luce sotto la porta.'],
+  ['Quando cambiare scena','Nuova intestazione ogni volta che cambia il luogo o salta il tempo (anche nello stesso posto: PIÙ TARDI). Non per i movimenti di macchina dentro lo stesso luogo. Se un personaggio passa da una stanza all\'altra, ogni stanza è una scena (con CONTINUO). Ogni scena dovrebbe cambiare qualcosa: entra il più tardi possibile, esci il prima possibile.','INT. CUCINA - NOTTE → INT. CORRIDOIO - CONTINUO']],
+ en:[['In unison','Two or more characters say the same line: join the names with & in the character cue, plus the parenthetical (together).','ANNA & PIETRO / (together) / That one is not on schedule.'],
+  ['Dual dialogue','Two characters talk at the same time with different lines: the two speeches are printed side by side. Put the cursor on the second speech and press Ctrl+D (or More… → Dual dialogue).','ANNA and PIETRO on the phone, talking over each other.'],
+  ['Phone, video, live feed','Voices coming from a device take an extension: (ON PHONE), (ON RADIO), (ON TV). What we see on a screen is introduced with a shot: ON THE MONITOR, ON THE PHONE SCREEN.','ON THE MONITOR — black and white, a train standing at platform one.'],
+  ['Intercut','To cut back and forth between two places (a phone call, a live feed): establish both places with their headings, then write INTERCUT - PLACE A / PLACE B and keep going without repeating headings. Close with END INTERCUT.','INTERCUT - CONTROL ROOM / STATION'],
+  ['Background chatter','Walla is described in the action: no lines needed. If some words must be heard, use a group character: VOICES, PATRONS, CROWD.','The bar is packed: a hum of voices and glasses.'],
+  ['Parentheticals','Very short, lowercase: how the line is said (whispering), to whom (to Marco), a pause (beat), a small gesture (lighting a cigarette). Longer actions go in the action.','MARCO / (quietly) / I know.'],
+  ['Unknown time of day','The time in the heading follows story time, not the light we see: a dark room in daytime is still DAY, and you describe the darkness in the action. If it does not matter, you can leave it out. CONTINUOUS = the scene follows without a time jump.','INT. BEDROOM - DAY / Pitch black. A blade of light under the door.'],
+  ['When to start a new scene','A new heading every time the location changes or time jumps (even in the same place: LATER). Not for camera moves within the same place. If a character walks from room to room, each room is a scene (with CONTINUOUS). Every scene should change something: get in late, get out early.','INT. KITCHEN - NIGHT → INT. HALLWAY - CONTINUOUS']]};
+function glossFor(txt){const k=String(txt||'').toUpperCase().trim();return GLOSS.find(g=>g.k.includes(k))||null;}
+const glEl=document.createElement('div');glEl.id='gloss';document.body.appendChild(glEl);
+function glossHTML(g){const c=g[uiLang]||g.it,itK=g.k[0],enK=g.k.find(k=>/TO:|FADE|THE END/.test(k))||g.k[0];
+  const head=uiLang==='en'?enK:itK,alt=uiLang==='en'?itK:enK;
+  return`<b>${esc(head)}</b><small>${esc(c.n)} · ${uiLang==='en'?'in Italian':'in inglese'} ${esc(alt)}</small><p>${esc(c.d)}</p><div class="ex"><i>${_t('Per esempio','For example')}</i>${esc(c.x)}</div>`;}
+function showGloss(g,x,y,right){if(!g)return hideGloss();glEl.innerHTML=glossHTML(g);glEl.style.display='block';const w=glEl.offsetWidth,h=glEl.offsetHeight;
+  glEl.style.left=Math.max(8,Math.min(right?x-w:x,innerWidth-w-8))+'px';glEl.style.top=Math.max(8,y+h>innerHeight-8?y-h-40:y)+'px';}
+function hideGloss(){glEl.style.display='none';}
+function glossNearPop(v){const g=glossFor(v);if(!g)return hideGloss();const r=pop.getBoundingClientRect();if(!r.width)return;
+  const right=r.right+340<innerWidth;showGloss(g,right?r.right+14:r.left-14,r.top,!right);}
+function renderHelp(){const en=uiLang==='en';
+  const keys=en?[['Enter','new element, already of the right type: action after a scene, dialogue after a character, the next character after dialogue…'],['Tab','change element: Action → Character → Transition → Scene; Dialogue ⇄ Parenthetical. Shift+Tab goes back. On an empty element Tab never fills in a suggestion.'],['Alt+1…8','Scene · Action · Character · Parenthetical · Dialogue · Transition · Shot · Centered'],['↓ then Enter','pick a suggestion (characters, locations, times, transitions, extensions like (V.O.)). If you already typed some letters, Enter/Tab completes.'],['Ctrl+D','dual dialogue: the current speech and the one next to it print side by side'],['&','in a character cue: MARCO & GIULIA speak in unison'],['(','at the start of a dialogue line creates a parenthetical'],['Ctrl+B / I / U','bold, italic, underline'],['Ctrl+F / Ctrl+H','find / replace'],['Ctrl+G','go to page'],['Ctrl+M','note on the current element'],['Ctrl+P','print preview / PDF'],['Ctrl+S','save the project (.scena)'],['Ctrl+.','focus mode'],['Paste','plain-text screenplays (also from PDF or in Fountain) are recognized and formatted.']]
+   :[['Invio','nuovo elemento, già del tipo giusto: dopo la scena l\'azione, dopo il personaggio il dialogo, dopo il dialogo il prossimo personaggio…'],['Tab','cambia elemento: Azione → Personaggio → Transizione → Scena; Dialogo ⇄ Parentetica. Maiusc+Tab torna indietro. Su un elemento vuoto Tab non inserisce mai un suggerimento.'],['Alt+1…8','Scena · Azione · Personaggio · Parentetica · Dialogo · Transizione · Inquadratura · Centrato'],['↓ poi Invio','scegli un suggerimento (personaggi, luoghi, momenti, transizioni, estensioni come (V.O.)). Se hai già scritto qualche lettera, Invio/Tab completa.'],['Ctrl+D','dialogo doppio: la battuta corrente e quella accanto vengono stampate affiancate'],['&','nel personaggio: MARCO & GIULIA parlano all\'unisono'],['(','all\'inizio di un dialogo crea una parentetica'],['Ctrl+B / I / U','grassetto, corsivo, sottolineato'],['Ctrl+F / Ctrl+H','trova / sostituisci'],['Ctrl+G','vai alla pagina'],['Ctrl+M','nota sull\'elemento corrente'],['Ctrl+P','anteprima di stampa / PDF'],['Ctrl+S','salva il progetto (.scena)'],['Ctrl+.','modalità concentrazione'],['Incolla','un copione in testo semplice (anche da PDF o in Fountain) viene riconosciuto e formattato.']];
+  $('#helpBody').innerHTML=`<h3>${en?'Writing with Scena':'Scrivere con Scena'}</h3><div class="keys">${keys.map(([k,v])=>`<kbd>${esc(k)}</kbd><span>${esc(v)}</span>`).join('')}</div>
+  <h4>${en?'Transitions':'Transizioni'}</h4><p class="note">${en?'Hover over a transition in the script to see this card on a sticky note.':'Passa con il mouse su una transizione nel copione per vedere questa spiegazione su un post-it.'}</p>
+  <div class="gl">${GLOSS.map(g=>{const c=g[uiLang]||g.it;return`<b>${esc(uiLang==='en'?(g.k.find(k=>/TO:|FADE|THE END/.test(k))||g.k[0]):g.k[0])}</b><span>${esc(c.d)}<span class="ex">${esc(c.x)}</span></span>`;}).join('')}</div>
+  <h4>${en?'Common situations':'Situazioni comuni'}</h4><div class="gl">${SITUATIONS[uiLang].map(([a,b,c])=>`<b>${esc(a)}</b><span>${esc(b)}<span class="ex">${esc(c)}</span></span>`).join('')}</div>
+  <p class="note">${en?'Standard format: Courier 12, industry margins, roughly 1 page = 1 minute. The <b>.fdx</b> file opens in Final Draft; <b>.fountain</b> in Highland, WriterDuet, Fade In, Slugline and many more.':'Formato standard: Courier 12, margini industriali, circa 1 pagina = 1 minuto. Il file <b>.fdx</b> si apre in Final Draft; il <b>.fountain</b> in Highland, WriterDuet, Fade In, Slugline e molti altri.'}</p>`;}
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2400);}
 function download(text,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);}
 const safeName=s=>(String(s||'sceneggiatura').replace(/[\\/:*?"<>|]+/g,'_').trim()||'sceneggiatura');
@@ -429,6 +548,8 @@ function wrapRanges(s,w){
   return res.length?res:[[0,0]];
 }
 const cueName=t=>t.toUpperCase().replace(/\(.*?\)/g,'').replace(/\^/g,'').trim();
+/* «MARCO & GIULIA» (o «MARCO E GIULIA»): battuta detta all'unisono, conta per entrambi */
+const cueNames=n=>String(n||'').split(/\s*&\s*|\s+E\s+|\s+AND\s+/).map(s=>s.trim()).filter(Boolean);
 
 /* ---------------- impaginazione (motore unico per editor, anteprima, stampa, txt) ---------------- */
 function paginate(blocks){
@@ -441,16 +562,26 @@ function paginate(blocks){
     let name='';
     if(b.t==='character'){
       name=cueName(txt);
-      if(S.contd&&name&&name===last&&!/\(CONT/i.test(txt)){const add=' '+lab.contd;for(const ch of add)cs.push({c:ch});txt+=add;}
+      if(S.contd&&name&&name===last&&!b.dual&&!/\(CONT/i.test(txt)){const add=' '+lab.contd;for(const ch of add)cs.push({c:ch});txt+=add;}
       last=name;
     }
-    items.push({i,t:b.t,T,cs,txt,ranges:wrapRanges(txt,T.w),sb:T.sb+(b.t==='scene'&&S.dbl?1:0),sceneNo:b.t==='scene'?sceneNo:0,rev:b.rev,cue:b.t==='character'?txt.replace(/\s*\(CONT[^)]*\)/i,''):''});
+    items.push({i,t:b.t,T,cs,txt,ranges:wrapRanges(txt,T.w),sb:T.sb+(b.t==='scene'&&S.dbl?1:0),sceneNo:b.t==='scene'?sceneNo:0,rev:b.rev,dual:b.t==='character'&&!!b.dual,cue:b.t==='character'?txt.replace(/\s*\(CONT[^)]*\)/i,''):''});
   });
+  const dualAt=new Map(dualPairs(blocks).map(p=>[p.a[0],p]));
   const pages=[],breaks=[],blockPos=[];let pg,y=0,cue='';
   const newPage=()=>{pg={lines:[]};pages.push(pg);y=0;};newPage();
   const put=(it,li)=>{pg.lines.push({y,it,li});y++;};
   const contLine=()=>{if(S.more&&cue){pg.lines.push({y,cont:cue+' '+lab.contd});y++;}};
   for(let k=0;k<items.length;k++){
+    const pr=dualAt.get(k);
+    if(pr){/* dialogo doppio: due colonne affiancate, mai spezzate tra le pagine */
+      const rowsOf=(a,b,col)=>{const rows=[];for(let j=a;j<b;j++){const d=DUAL_T[items[j].t]||DUAL_T.dialogue;const x=Object.assign({},items[j],{T:Object.assign({},items[j].T,{ind:col+d.ind,w:d.w,align:null}),ranges:wrapRanges(items[j].txt,d.w)});items[j]=x;x.ranges.forEach((r,li)=>rows.push({it:x,li}));}return rows;};
+      const A=rowsOf(pr.a[0],pr.a[1],0),Bc=rowsOf(pr.b[0],pr.b[1],32),Hh=Math.max(A.length,Bc.length);let sb=y===0?0:items[k].sb;
+      if(y>0&&y+sb+Hh>LP){newPage();breaks.push({bi:items[k].i,li:0});sb=0;}
+      y+=sb;const y0=y;
+      [A,Bc].forEach(rows=>rows.forEach((r,d)=>{pg.lines.push({y:y0+d,it:r.it,li:r.li});if(r.li===0)blockPos[r.it.i]={p:pages.length-1,y:y0+d};}));
+      y=y0+Hh;cue='';k=pr.b[1]-1;continue;
+    }
     const it=items[k],n=it.ranges.length;let sb=y===0?0:it.sb;
     if(it.t==='character')cue=it.cue;else if(it.t!=='paren'&&it.t!=='dialogue')cue='';
     let need=sb+n;
@@ -479,13 +610,40 @@ function paginate(blocks){
   return{pages,breaks,blockPos,items,LP};
 }
 
+/* ---------------- dialogo doppio ---------------- */
+const DUAL_T={character:{ind:8,w:20},paren:{ind:4,w:22},dialogue:{ind:0,w:28}};
+const isSpeechTail=b=>b&&(b.t==='paren'||b.t==='dialogue');
+function dualPairs(blocks){const out=[];
+  for(let k=0;k<blocks.length;k++){if(blocks[k].t!=='character'||blocks[k].dual)continue;let ea=k+1;while(isSpeechTail(blocks[ea]))ea++;
+    if(blocks[ea]&&blocks[ea].t==='character'&&blocks[ea].dual){let eb=ea+1;while(isSpeechTail(blocks[eb]))eb++;out.push({a:[k,ea],b:[ea,eb]});k=eb-1;}}
+  return out;}
+function layoutDual(){const els=ed.children;
+  for(const el of ed.querySelectorAll('.dA,.dB')){el.classList.remove('dA','dB');el.style.marginTop='';el.style.paddingBottom='';}
+  for(const pr of dualPairs(model)){if(!els[pr.b[1]-1])continue;
+    for(let i=pr.a[0];i<pr.a[1];i++)els[i].classList.add('dA');for(let i=pr.b[0];i<pr.b[1];i++)els[i].classList.add('dB');
+    const a0=els[pr.a[0]],aL=els[pr.a[1]-1],b0=els[pr.b[0]],bL=els[pr.b[1]-1];
+    const aBot=aL.offsetTop+aL.offsetHeight;b0.style.marginTop=(a0.offsetTop-aBot)+'px';
+    const bBot=bL.offsetTop+bL.offsetHeight;if(aBot>bBot)bL.style.paddingBottom=(aBot-bBot)+'px';}}
+function toggleDual(){const el=curBlock();if(!el)return toast(_t('Mettiti su una battuta (personaggio, parentetica o dialogo)','Put the cursor on a speech (character, parenthetical or dialogue)'));
+  const els=[...ed.children];let i=els.indexOf(el);while(i>0&&/^(paren|dialogue)$/.test(els[i].dataset.t))i--;const cue=els[i];
+  if(!cue||cue.dataset.t!=='character')return toast(_t('Mettiti su una battuta (personaggio, parentetica o dialogo)','Put the cursor on a speech (character, parenthetical or dialogue)'));
+  structural();
+  if(cue.dataset.dual){delete cue.dataset.dual;update(true);return toast(_t('Dialogo doppio tolto','Dual dialogue removed'));}
+  let p=i-1;while(p>=0&&/^(paren|dialogue)$/.test(els[p].dataset.t))p--;
+  if(i>0&&/^(character|paren|dialogue)$/.test(els[i-1].dataset.t)&&els[p]&&els[p].dataset.t==='character'){
+    if(els[p].dataset.dual)return toast(_t('Si possono affiancare solo due battute','Only two speeches can be side by side'));
+    cue.dataset.dual='1';update(true);return toast(_t('Dialogo doppio: questa battuta e la precedente verranno stampate affiancate','Dual dialogue: this speech and the previous one will print side by side'));}
+  let j=i+1;while(els[j]&&/^(paren|dialogue)$/.test(els[j].dataset.t))j++;
+  if(els[j]&&els[j].dataset.t==='character'&&!els[j].dataset.dual){els[j].dataset.dual='1';update(true);return toast(_t('Dialogo doppio: questa battuta e la successiva verranno stampate affiancate','Dual dialogue: this speech and the next one will print side by side'));}
+  toast(_t('Il dialogo doppio affianca due battute consecutive: scrivi le due battute una dopo l\'altra, poi premi Ctrl+D','Dual dialogue puts two consecutive speeches side by side: write them one after the other, then press Ctrl+D'));}
+
 /* ---------------- editor: DOM ---------------- */
-function mkEl(t,h,attrs){const d=document.createElement('div');d.className='el t-'+t;d.dataset.t=t;d.innerHTML=h||'<br>';if(attrs)for(const k of ['note','syn','col','rev'])if(attrs[k]){d.dataset[k]=attrs[k];if(k==='col')d.style.setProperty('--col',attrs[k]);if(k==='note')d.title='Nota: '+attrs[k];}return d;}
+function mkEl(t,h,attrs){const d=document.createElement('div');d.className='el t-'+t;d.dataset.t=t;d.innerHTML=h||'<br>';if(attrs)for(const k of ['note','syn','col','rev','dual'])if(attrs[k]){d.dataset[k]=attrs[k];if(k==='col')d.style.setProperty('--col',attrs[k]);if(k==='note')d.title='Nota: '+attrs[k];}return d;}
 function renderEditor(blocks){
   ed.innerHTML='';const f=document.createDocumentFragment();
   (blocks.length?blocks:[{t:'scene',h:''}]).forEach(b=>f.appendChild(mkEl(b.t,b.h,b)));ed.appendChild(f);
 }
-function readBlocks(){return[...ed.children].map(el=>{const b={t:el.dataset.t||'action',h:cleanH(el.innerHTML)};for(const k of ['note','syn','col','rev'])if(el.dataset[k])b[k]=el.dataset[k];return b;});}
+function readBlocks(){return[...ed.children].map(el=>{const b={t:el.dataset.t||'action',h:cleanH(el.innerHTML)};for(const k of ['note','syn','col','rev','dual'])if(el.dataset[k])b[k]=el.dataset[k];return b;});}
 function nodeEl(n){while(n&&n.parentNode!==ed)n=n.parentNode;return n&&n.parentNode===ed?n:null;}
 function caretInfo(){
   const s=getSelection();if(!s.rangeCount)return null;const r=s.getRangeAt(0);const el=nodeEl(r.startContainer);if(!el)return null;
@@ -499,7 +657,7 @@ function setCaret(el,off,endOff){
 }
 const textOf=el=>el.textContent.replace(/ /g,' ');
 function setType(el,t){
-  const old=el.dataset.t;el.className='el t-'+t+(el.classList.contains('cur')?' cur':'');el.dataset.t=t;
+  const old=el.dataset.t;el.className='el t-'+t+(el.classList.contains('cur')?' cur':'');el.dataset.t=t;if(t!=='character')delete el.dataset.dual;el.style.marginTop='';el.style.paddingBottom='';
   if(t==='paren'&&!textOf(el).trim()){el.textContent='()';setCaret(el,1);}
   else if(old==='paren'&&t!=='paren'&&textOf(el).trim()==='()'){el.innerHTML='<br>';setCaret(el,0);}
   markRev(el);
@@ -535,7 +693,8 @@ ed.addEventListener('keydown',e=>{
     if(e.key==='ArrowDown'){e.preventDefault();popMove(1);return;}
     if(e.key==='ArrowUp'){e.preventDefault();popMove(-1);return;}
     if(e.key==='Escape'){e.preventDefault();hidePop(true);return;}
-    if((e.key==='Enter'||e.key==='Tab')&&!e.shiftKey&&(popSel>=0||e.key==='Tab')){e.preventDefault();popAccept(Math.max(0,popSel));return;}
+    if((e.key==='Enter'||e.key==='Tab')&&!e.shiftKey&&popSel>=0){e.preventDefault();popAccept(popSel);return;}
+    if(e.key==='Tab'||e.key==='Enter')hidePop();
   }
   const c=caretInfo();if(!c)return;const el=c.el,t=el.dataset.t,txt=textOf(el);
   if(e.altKey&&!e.ctrlKey&&/^[1-8]$/.test(e.key)){e.preventDefault();structural();setType(el,ORDER[+e.key-1]);after();return;}
@@ -623,7 +782,7 @@ document.addEventListener('selectionchange',()=>{if(document.activeElement===ed)
 const pop=$('#pop');let popItems=[],popSel=-1,popEl=null,popClosedFor=null;
 let SET={chars:[],locs:[],times:[]};
 const popVisible=()=>pop.style.display==='block';
-function hidePop(user){pop.style.display='none';popItems=[];if(user){const c=caretInfo();popClosedFor=c?c.el.textContent+'|'+c.idx:null;}}
+function hidePop(user){pop.style.display='none';popItems=[];hideGloss();if(user){const c=caretInfo();popClosedFor=c?c.el.textContent+'|'+c.idx:null;}}
 function speakerOrder(idx){
   const recent=[];for(let i=idx-1;i>=0&&recent.length<4;i--){const b=ed.children[i];if(b.dataset.t==='scene'&&recent.length>=2)break;if(b.dataset.t==='character'){const nm=cueName(textOf(b));if(nm&&!recent.includes(nm))recent.push(nm);}}
   const ord=[];
@@ -638,11 +797,13 @@ function suggestions(el,idx){
     if(!m){const tt=U.trim();return lab.pre.filter(p=>p.startsWith(tt)&&p!==tt).map(p=>({l:p,v:p+' '}));}
     const p=m[1],rest=m[2],d=rest.lastIndexOf(' - ');
     if(d<0){const loc=rest.trim();const ls=SET.locs.filter(x=>x.startsWith(loc)&&x!==loc).map(x=>({l:x,v:p+' '+x+' - '}));
-      if(!ls.length&&loc&&!loc.endsWith('-'))return SET.times.map(x=>({l:'– '+x,v:p+' '+loc.replace(/\s*-\s*$/,'')+' - '+x}));return ls;}
+      if(!ls.length&&loc&&!loc.endsWith('-'))return SET.times.map(x=>({l:'– '+x,v:p+' '+loc.replace(/\s*-\s*$/,'')+' - '+x,soft:true}));return ls;}
     const loc=rest.slice(0,d),tm=rest.slice(d+3).trim();
-    return SET.times.filter(x=>x.startsWith(tm)&&x!==tm).map(x=>({l:x,v:p+' '+loc+' - '+x}));
+    return SET.times.filter(x=>x.startsWith(tm)&&x!==tm).map(x=>({l:x,v:p+' '+loc+' - '+x,soft:!tm}));
   }
   if(t==='character'){
+    if(U.includes('&')&&!U.includes('(')){const parts=U.split('&'),tt=parts.pop().trim(),head=parts.join('&').trim(),have=cueNames(head);
+      return SET.chars.filter(x=>x.startsWith(tt)&&x!==tt&&!have.includes(x)).map(x=>({l:x,v:head+' & '+x,soft:!tt}));}
     if(U.includes('(')){const nm=U.slice(0,U.indexOf('(')).trim(),part=U.slice(U.indexOf('('));return lab.ext.filter(x=>x.startsWith(part)&&x!==part).map(x=>({l:x,v:nm+' '+x}));}
     const tt=U.trim();return speakerOrder(idx).filter(x=>x.startsWith(tt)&&x!==tt).map(x=>({l:x,v:x}));
   }
@@ -653,15 +814,18 @@ function updatePopup(){
   const c=caretInfo();if(!c||!c.collapsed||document.activeElement!==ed){hidePop();return;}
   const tx=textOf(c.el);if(c.off!==tx.length||popClosedFor===c.el.textContent+'|'+c.idx){hidePop();return;}popClosedFor=null;
   const items=suggestions(c.el,c.idx).slice(0,9);if(!items.length){hidePop();return;}
-  popItems=items;popEl=c.el;popSel=tx.trim()?0:-1;drawPop();
+  popItems=items;popEl=c.el;popSel=tx.trim()&&!items[0].soft?0:-1;drawPop();
   const r=c.range.getBoundingClientRect(),er=c.el.getBoundingClientRect();
   const x=(r.left||er.left),y=(r.bottom||er.bottom)+4;
   pop.style.display='block';pop.style.left=Math.min(x,innerWidth-pop.offsetWidth-10)+'px';pop.style.top=(y+pop.offsetHeight>innerHeight?y-pop.offsetHeight-26:y)+'px';
 }
 function drawPop(){
-  const hd={scene:'luoghi e momenti',character:'personaggi',transition:'transizioni'}[popEl.dataset.t]||'';
-  pop.innerHTML=`<div class="h">${hd} · ↑↓ scegli · Invio/Tab conferma · Esc chiudi</div>`+popItems.map((it,k)=>`<div data-k="${k}" class="${k===popSel?'on':''}">${esc(it.l)}</div>`).join('');
+  const hd=(uiLang==='en'?{scene:'locations and times',character:'characters',transition:'transitions'}:{scene:'luoghi e momenti',character:'personaggi',transition:'transizioni'})[popEl.dataset.t]||'';
+  pop.innerHTML=`<div class="h">${hd} · ↑↓ ${_t('scegli','choose')} · ${popSel<0?_t('facoltativo: ↓ per scegliere, oppure continua','optional: ↓ to choose, or keep typing'):_t('Invio/Tab conferma · Esc chiudi','Enter/Tab confirm · Esc close')}${popEl.dataset.t==='transition'?_t(' · passa sopra per sapere cos\'è',' · hover to learn what it is'):''}</div>`+popItems.map((it,k)=>`<div data-k="${k}" class="${k===popSel?'on':''}">${esc(it.l)}</div>`).join('');
+  if(popEl.dataset.t==='transition'&&popSel>=0)setTimeout(()=>glossNearPop(popItems[popSel].v),0);else hideGloss();
 }
+pop.addEventListener('mouseover',e=>{const d=e.target.closest('[data-k]');if(d&&popEl&&popEl.dataset.t==='transition')glossNearPop(popItems[+d.dataset.k].v);});
+pop.addEventListener('mouseleave',()=>{if(!(popEl&&popEl.dataset.t==='transition'&&popSel>=0))hideGloss();});
 function popMove(d){popSel=(popSel+d+popItems.length)%popItems.length;if(popSel<0)popSel=0;drawPop();}
 function popAccept(k){
   const it=popItems[k];if(!it||!popEl)return;beginBurst();
@@ -670,6 +834,10 @@ function popAccept(k){
 }
 pop.addEventListener('mousedown',e=>{e.preventDefault();const d=e.target.closest('[data-k]');if(d)popAccept(+d.dataset.k);});
 ed.addEventListener('blur',()=>setTimeout(()=>{if(document.activeElement!==ed)hidePop();},120));
+/* post-it: spiegazione delle transizioni al passaggio del mouse */
+ed.addEventListener('mouseover',e=>{if(popVisible())return;const el=e.target.closest&&e.target.closest('.t-transition');if(!el){hideGloss();return;}
+  const g=glossFor(textOf(el));if(!g){hideGloss();return;}const rr=document.createRange();rr.selectNodeContents(el);const tr=rr.getBoundingClientRect(),r=el.getBoundingClientRect();showGloss(g,tr.right||r.right,r.bottom+14,true);});
+ed.addEventListener('mouseleave',()=>{if(!popVisible())hideGloss();});
 
 /* ---------------- aggiornamento: impaginazione, navigatore, stato ---------------- */
 let upT=0;
@@ -679,11 +847,11 @@ function doUpdate(){
   const c=caretInfo(),skip=c?c.idx:-1,cs=new Map(),ls=new Map(),tm=new Set(L().times);
   model.forEach((b,i)=>{
     if(i===skip)return;const tx=plain(b.h).toUpperCase().trim();
-    if(b.t==='character'){const n=cueName(tx);if(n)cs.set(n,(cs.get(n)||0)+1);}
+    if(b.t==='character'){cueNames(cueName(tx)).forEach(n=>cs.set(n,(cs.get(n)||0)+1));}
     if(b.t==='scene'){const m=tx.match(/^\S+\.\s+(.*?)(?:\s+-\s+(.*))?$/);if(m){if(m[1])ls.set(m[1],(ls.get(m[1])||0)+1);if(m[2])tm.add(m[2]);}}
   });
   SET.chars=[...cs.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);SET.locs=[...ls.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);SET.times=[...tm];
-  ed.classList.toggle('empty',model.length===1&&!plain(model[0].h).trim());
+  ed.classList.toggle('empty',model.length===1&&!plain(model[0].h).trim());layoutDual();
   if(lastPages&&PG.pages.length>lastPages)sfx('bell');lastPages=PG.pages.length;
   drawBreaks();sizePage();renderNav();updateCur();autosave();
   if($('#cards').classList.contains('on'))renderCards();
@@ -733,8 +901,9 @@ function charStats(){
   const m=new Map();let scene=0,cur=null;
   model.forEach((b,i)=>{
     if(b.t==='scene')scene++;
-    if(b.t==='character'){const n=cueName(plain(b.h));if(!n){cur=null;return;}if(!m.has(n))m.set(n,{name:n,speeches:0,words:0,scenes:new Set(),first:pageOf(i),idx:[]});cur=m.get(n);cur.speeches++;cur.scenes.add(scene);cur.idx.push(i);}
-    else if(b.t==='dialogue'&&cur)cur.words+=(plain(b.h).match(/\S+/g)||[]).length;
+    if(b.t==='character'){const ns=cueNames(cueName(plain(b.h)));if(!ns.length){cur=null;return;}
+      cur=ns.map(n=>{if(!m.has(n))m.set(n,{name:n,speeches:0,words:0,scenes:new Set(),first:pageOf(i),idx:[]});const o=m.get(n);o.speeches++;o.scenes.add(scene);o.idx.push(i);return o;});}
+    else if(b.t==='dialogue'&&cur){const w=(plain(b.h).match(/\S+/g)||[]).length;cur.forEach(o=>o.words+=w);}
     else if(b.t!=='paren')cur=null;
   });
   return[...m.values()].sort((a,b)=>b.words-a.words||b.speeches-a.speeches);
@@ -855,7 +1024,7 @@ function toFountain(){
     const inSpeech=['paren','dialogue'].includes(b.t)&&prev&&['character','paren','dialogue'].includes(prev.t);
     if(!inSpeech&&out.length&&out[out.length-1]!=='')out.push('');
     if(b.t==='scene'){const U=tx.toUpperCase();out.push((SCENE_RE.test(U)?'':'.')+U);if(b.syn)out.push('','= '+b.syn);}
-    else if(b.t==='character'){const U=tx.toUpperCase();out.push(/[a-z]/.test(cueName(tx))||!/[A-Z]/.test(U)?'@'+U:U);}
+    else if(b.t==='character'){const U=tx.toUpperCase();out.push((/[a-z]/.test(cueName(tx))||!/[A-Z]/.test(U)?'@'+U:U)+(b.dual?' ^':''));}
     else if(b.t==='paren')out.push(tx.startsWith('(')?tx:'('+tx+')');
     else if(b.t==='dialogue')out.push(tx||' ');
     else if(b.t==='transition'){const U=tx.toUpperCase();out.push(/TO:$/.test(U)?U:'> '+U);}
@@ -889,10 +1058,11 @@ function parseFountain(src){
     if(/^\.[^.]/.test(ln)&&isBlank(i-1)){push('scene',ln.slice(1).replace(/\s*#.+#\s*$/,''));continue;}
     if(SCENE_RE.test(ln)&&isBlank(i-1)){push('scene',ln.replace(/\s*#.+#\s*$/,'').replace(/^\d+[A-Z]?\s+/,''));continue;}
     if(/^\d+[A-Z]?\s+(INT|EST|EXT|I\/E)[.\s]/i.test(ln)){push('scene',ln.replace(/^\d+[A-Z]?\s+/,'').replace(/\s+\d+[A-Z]?$/,''));continue;}
-    const U=ln.replace(/\s*\^$/,'');
-    if((/^[A-ZÀ-Ü0-9 .'’\-]+:$/.test(U)&&/[A-Z]/.test(U)&&isBlank(i-1)&&isBlank(i+1))||LANG.it.trans.includes(U)||LANG.en.trans.includes(U)){push('transition',U);continue;}
+    const nm=ln.match(/\s*(\[\[.+?\]\])\s*$/),base=nm?ln.slice(0,nm.index):ln,keepNote=nm?' '+nm[1]:'';
+    const U=base.replace(/\s*\^$/,'');
+    if((/^[A-ZÀ-Ü0-9 .'’\-]+:$/.test(U)&&/[A-Z]/.test(U)&&isBlank(i-1)&&isBlank(i+1))||LANG.it.trans.includes(U)||LANG.en.trans.includes(U)){push('transition',U+keepNote);continue;}
     const nameOnly=U.replace(/\(.*?\)/g,'').trim();
-    if((ln.startsWith('@')||(nameOnly&&nameOnly===nameOnly.toUpperCase()&&/[A-ZÀ-Ü]/.test(nameOnly)&&nameOnly.length<40))&&isBlank(i-1)&&!isBlank(i+1)){push('character',U.replace(/^@/,''));inDlg=true;continue;}
+    if((base.startsWith('@')||(nameOnly&&nameOnly===nameOnly.toUpperCase()&&/[A-ZÀ-Ü]/.test(nameOnly)&&nameOnly.length<40))&&isBlank(i-1)&&!isBlank(i+1)){push('character',U.replace(/^@/,'')+keepNote,/\^\s*$/.test(base)?{dual:'1'}:null);inDlg=true;continue;}
     push('action',ln);
   }
   return{blocks,title};
@@ -908,9 +1078,12 @@ function fdxTexts(h){
 }
 function toFdx(){
   const blocks=readBlocks(),T=doc.title;
-  const ps=blocks.map(b=>{let tx=fdxTexts(b.t==='paren'&&!plain(b.h).trim().startsWith('(')?esc('('+plain(b.h)+')'):b.h);
+  const para=b=>{let tx=fdxTexts(b.t==='paren'&&!plain(b.h).trim().startsWith('(')?esc('('+plain(b.h)+')'):b.h);
     const al=b.t==='centered'?' Alignment="Center"':'';let extra='';if(b.t==='scene'&&b.syn)extra=`<SceneProperties Title=""><Summary><Paragraph><Text>${xesc(b.syn)}</Text></Paragraph></Summary></SceneProperties>`;
-    return `    <Paragraph Type="${FDX_T[b.t]}"${al}>${extra}${tx}</Paragraph>`;}).join('\n');
+    return `    <Paragraph Type="${FDX_T[b.t]}"${al}>${extra}${tx}</Paragraph>`;};
+  const dAt=new Map(dualPairs(blocks).map(p=>[p.a[0],p])),outP=[];
+  for(let i=0;i<blocks.length;i++){const p=dAt.get(i);if(p){const inner=[];for(let j=p.a[0];j<p.b[1];j++)inner.push('        '+para(blocks[j]).trim());outP.push('    <Paragraph>\n      <DualDialogue>\n'+inner.join('\n')+'\n      </DualDialogue>\n    </Paragraph>');i=p.b[1]-1;}else outP.push(para(blocks[i]));}
+  const ps=outP.join('\n');
   const tp=[];const C=(s,u)=>`      <Paragraph Alignment="Center" Type="Action"><Text${u?' Style="Underline+AllCaps"':''}>${xesc(s)}</Text></Paragraph>`;const E='      <Paragraph Type="Action"><Text></Text></Paragraph>';
   if(T.title){for(let k=0;k<18;k++)tp.push(E);tp.push(C(T.title.toUpperCase(),true),E,C(T.credit||''),E,...(T.author||'').split('\n').map(a=>C(a)));if(T.source)tp.push(E,C(T.source));for(let k=0;k<12;k++)tp.push(E);(T.contact||'').split('\n').forEach(c=>tp.push(`      <Paragraph Type="Action"><Text>${xesc(c)}</Text></Paragraph>`));if(T.draft)tp.push(`      <Paragraph Alignment="Right" Type="Action"><Text>${xesc(T.draft)}</Text></Paragraph>`);}
   return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n<FinalDraft DocumentType="Script" Template="No" Version="5">\n  <Content>\n${ps}\n  </Content>\n  <TitlePage>\n    <Content>\n${tp.join('\n')}\n    </Content>\n  </TitlePage>\n</FinalDraft>\n`;
@@ -919,10 +1092,11 @@ function parseFdx(xml){
   const d=new DOMParser().parseFromString(xml,'application/xml');if(d.querySelector('parsererror'))throw new Error('XML non valido');
   const rev={};for(const k in FDX_T)if(!rev[FDX_T[k]])rev[FDX_T[k]]=k;rev['General']='action';rev['Cast List']='action';
   const content=[...d.documentElement.children].find(c=>c.tagName==='Content');if(!content)throw new Error('nessun contenuto');
-  const blocks=[...content.children].filter(p=>p.tagName==='Paragraph').map(p=>{
+  const flat=[];[...content.children].filter(p=>p.tagName==='Paragraph').forEach(p=>{const dd=p.querySelector(':scope > DualDialogue');if(!dd){flat.push(p);return;}let nc=0;[...dd.children].filter(q=>q.tagName==='Paragraph').forEach(q=>{if(q.getAttribute('Type')==='Character'){nc++;if(nc===2)q.__dual=1;}flat.push(q);});});
+  const blocks=flat.map(p=>{
     let h='';p.querySelectorAll(':scope > Text').forEach(t=>{let s=esc(t.textContent);const st=t.getAttribute('Style')||'';if(st.includes('Underline'))s='<u>'+s+'</u>';if(st.includes('Italic'))s='<i>'+s+'</i>';if(st.includes('Bold'))s='<b>'+s+'</b>';h+=s;});
     let t=rev[p.getAttribute('Type')]||'action';if(p.getAttribute('Alignment')==='Center'&&t==='action')t='centered';
-    const b={t,h};const sum=p.querySelector('SceneProperties Summary');if(sum&&sum.textContent.trim())b.syn=sum.textContent.trim();return b;
+    const b={t,h};if(p.__dual&&t==='character')b.dual='1';const sum=p.querySelector('SceneProperties Summary');if(sum&&sum.textContent.trim())b.syn=sum.textContent.trim();return b;
   });
   const title={};const tp=d.querySelector('TitlePage Content');
   if(tp){const lines=[...tp.querySelectorAll('Paragraph')].map(p=>p.textContent.trim()).filter(Boolean);if(lines[0])title.title=lines[0];if(lines[1])title.credit=lines[1];if(lines[2])title.author=lines[2];}
@@ -935,7 +1109,7 @@ function toTxt(){
   PG.pages.forEach((pg,k)=>{
     const rows=Array.from({length:PG.LP},()=>'');
     for(const ln of pg.lines){if(ln.more||ln.cont){rows[ln.y]=' '.repeat(22)+(ln.more||ln.cont);continue;}
-      const it=ln.it,[a,b]=it.ranges[ln.li],s=it.txt.slice(a,b).replace(/\s+$/,'');let ind=it.T.ind;if(it.T.align==='right')ind=it.T.w-s.length;else if(it.T.align==='center')ind=Math.floor((it.T.w-s.length)/2);rows[ln.y]=' '.repeat(Math.max(0,ind))+s;}
+      const it=ln.it,[a,b]=it.ranges[ln.li],s=it.txt.slice(a,b).replace(/\s+$/,'');let ind=it.T.ind;if(it.T.align==='right')ind=it.T.w-s.length;else if(it.T.align==='center')ind=Math.floor((it.T.w-s.length)/2);const cur=rows[ln.y]||'';rows[ln.y]=(cur.length&&cur.length>=ind?cur+' ':cur.padEnd(Math.max(0,ind)))+s;}
     while(rows.length&&!rows[rows.length-1])rows.pop();
     out.push((k>0?' '.repeat(58)+(k+1)+'.\n\n':'')+rows.join('\n'));
   });
@@ -987,10 +1161,10 @@ function openNote(){const el=curBlock();if(!el)return toast('Mettiti prima su un
 $('#dNote').addEventListener('close',()=>{const d=$('#dNote'),el=d._el;if(!el)return;if(d.returnValue==='ok'||d.returnValue==='del'){structural();const v=d.returnValue==='del'?'':$('#nText').value.trim();if(v){el.dataset.note=v;el.title='Nota: '+v;}else{delete el.dataset.note;el.removeAttribute('title');}update(true);}ed.focus();});
 $('#bTitle').onclick=()=>{const T=doc.title;$('#tTitle').value=T.title;$('#tCredit').value=T.credit;$('#tAuthor').value=T.author;$('#tSource').value=T.source;$('#tDraft').value=T.draft;$('#tContact').value=T.contact;$('#tShow').checked=T.show;$('#dTitle').returnValue='';$('#dTitle').showModal();};
 $('#dTitle').addEventListener('close',()=>{if($('#dTitle').returnValue!=='ok')return;Object.assign(doc.title,{title:$('#tTitle').value.trim(),credit:$('#tCredit').value.trim(),author:$('#tAuthor').value.trim(),source:$('#tSource').value.trim(),draft:$('#tDraft').value.trim(),contact:$('#tContact').value.trim(),show:$('#tShow').checked});autosave();toast('Frontespizio aggiornato');});
-$('#bSet').onclick=()=>{$('#sPaper').value=S.paper;$('#sLang').value=S.lang;$('#sNums').checked=S.sceneNums;$('#sBold').checked=S.boldScenes;$('#sDbl').checked=S.dbl;$('#sContd').checked=S.contd;$('#sMore').checked=S.more;$('#sDark').checked=S.dark;$('#sType').checked=S.typewriter;$('#sRev').checked=S.rev;$('#sRevName').value=S.revName;$('#dSet').returnValue='';$('#dSet').showModal();};
-$('#dSet').addEventListener('close',()=>{if($('#dSet').returnValue!=='ok')return;Object.assign(S,{paper:$('#sPaper').value,lang:$('#sLang').value,sceneNums:$('#sNums').checked,boldScenes:$('#sBold').checked,dbl:$('#sDbl').checked,contd:$('#sContd').checked,more:$('#sMore').checked,dark:$('#sDark').checked,typewriter:$('#sType').checked,rev:$('#sRev').checked,revName:$('#sRevName').value});applySettings();update(true);});
+$('#bSet').onclick=()=>{$('#sUi').value=uiLang;$('#sPaper').value=S.paper;$('#sLang').value=S.lang;$('#sNums').checked=S.sceneNums;$('#sBold').checked=S.boldScenes;$('#sDbl').checked=S.dbl;$('#sContd').checked=S.contd;$('#sMore').checked=S.more;$('#sDark').checked=S.dark;$('#sType').checked=S.typewriter;$('#sRev').checked=S.rev;$('#sRevName').value=S.revName;$('#dSet').returnValue='';$('#dSet').showModal();};
+$('#dSet').addEventListener('close',()=>{if($('#dSet').returnValue!=='ok')return;Object.assign(S,{paper:$('#sPaper').value,lang:$('#sLang').value,sceneNums:$('#sNums').checked,boldScenes:$('#sBold').checked,dbl:$('#sDbl').checked,contd:$('#sContd').checked,more:$('#sMore').checked,dark:$('#sDark').checked,typewriter:$('#sType').checked,rev:$('#sRev').checked,revName:$('#sRevName').value});const nu=$('#sUi').value;if(nu!==uiLang){if(uiLang==='en'){uiLang='it';trNode(document.body);}uiLang=nu;try{localStorage.setItem('scena-ui',uiLang);}catch(e){}applyUi();if(uiLang==='en'&&S.lang==='it')toast('Tip: for INT./EXT., DAY/NIGHT and CONT\'D choose English under Script conventions');}applySettings();update(true);});
 $('#sClearRev').onclick=async()=>{$('#dSet').close();if(!await ask('Segni di revisione','Togliere tutti gli asterischi di revisione dal copione?',{ok:'Togli'}))return;structural();$$('#ed .el[data-rev]').forEach(e=>delete e.dataset.rev);update(true);toast('Segni di revisione cancellati');};
-function applySettings(){soundUi();document.body.classList.toggle('scnum',S.sceneNums);document.body.classList.toggle('bolds',S.boldScenes);document.body.classList.toggle('dbl',S.dbl);document.body.classList.toggle('dark',S.dark);$('#page').style.width=pageSize().w+'in';$('#page').style.minHeight=pageSize().h+'in';sizePage();}
+function applySettings(){soundUi();ed.lang=S.lang==='en'?'en':'it';document.body.classList.toggle('scnum',S.sceneNums);document.body.classList.toggle('bolds',S.boldScenes);document.body.classList.toggle('dbl',S.dbl);document.body.classList.toggle('dark',S.dark);$('#page').style.width=pageSize().w+'in';$('#page').style.minHeight=pageSize().h+'in';sizePage();}
 $('#bReport').onclick=()=>{
   update(true);const sc=scenesInfo(),cs=charStats(),pages=PG.pages.length,words=model.reduce((s,b)=>s+(plain(b.h).match(/\S+/g)||[]).length,0);
   let int=0,ext=0,day=0,night=0;const locs=new Map();
@@ -1038,7 +1212,7 @@ $('#elType').onchange=()=>{const el=curBlock();if(!el)return;structural();setTyp
 $('#bUndo').onclick=undo;$('#bRedo').onclick=redo;$('#bSave').onclick=()=>saveDoc(false);$('#bOpen').onclick=openDoc;
 $('#bSample').onclick=async()=>{if(!await ask('Sceneggiatura di esempio','Il copione attuale verrà sostituito dall\'esempio. Se non l\'hai salvato su file, salvalo prima.',{ok:'Apri l\'esempio'}))return;fileHandle=null;loadDoc(newDoc(true));navTab='notes';$$('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab==='notes'));renderNav();toast('Le parti evidenziate in giallo hanno una nota: elenco nella scheda "Note"');};
 $('#bNew').onclick=async()=>{if(!await ask('Nuovo copione','Il copione attuale verrà sostituito da una pagina bianca. Se non l\'hai salvato su file, salvalo prima.',{ok:'Crea nuovo copione'}))return;fileHandle=null;loadDoc(newDoc(false));toast('Nuovo copione: inizia scrivendo INT. o EST.');};
-$('#bMore').onchange=()=>{const v=$('#bMore').value;$('#bMore').value='';if(v)$('#'+v).click();};
+$('#bMore').onchange=()=>{const v=$('#bMore').value;$('#bMore').value='';if(v==='dual'){ed.focus({preventScroll:true});if(curEl&&curEl.isConnected)setCaret(curEl,textOf(curEl).length);toggleDual();}else if(v)$('#'+v).click();};
 $('#bSound').onclick=()=>{S.sound=!S.sound;soundUi();autosave();if(S.sound){sfx('key');toast('Suoni della macchina da scrivere attivi');}ed.focus({preventScroll:true});};
 $('#bFocus').onclick=()=>{document.body.classList.toggle('focus');$('#bFocus').classList.toggle('on');setTimeout(()=>{sizePage();drawBreaks();},50);};
 $('#bHelp').onclick=()=>$('#dHelp').showModal();
@@ -1050,6 +1224,7 @@ document.addEventListener('keydown',e=>{
   else if(mod&&k==='f'){e.preventDefault();openFind(false);}
   else if(mod&&k==='h'){e.preventDefault();openFind(true);}
   else if(mod&&k==='m'){e.preventDefault();openNote();}
+  else if(mod&&k==='d'){e.preventDefault();toggleDual();}
   else if(mod&&k==='.'){e.preventDefault();$('#bFocus').click();}
   else if(mod&&k==='g'){e.preventDefault();ask('Vai alla pagina','Numero di pagina (1–'+(PG?PG.pages.length:1)+'):',{input:true,ok:'Vai',noFocus:true}).then(v=>{const p=+v;if(p>=1){update(true);if(p===1)gotoBlock(0);else{const b=PG.breaks[Math.min(p,PG.pages.length)-2];if(b)gotoBlock(b.bi);}}});}
   else if(mod&&!e.shiftKey&&k==='z'&&document.activeElement!==ed&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();undo();}
@@ -1085,7 +1260,7 @@ function SAMPLE(){
     B('character','MARCO',{note:'Marco riprende a parlare dopo un\'azione: in stampa comparirà da solo "(CONT.)" accanto al nome. Si può disattivare in Impostazioni.'}),
     B('dialogue','Anche l\'orologio dice che è quasi mezzanotte. Da undici anni.'),
     B('action','Giulia alza lo sguardo. Le lancette, adesso, si muovono. <i>All\'indietro.</i>',{note:'Il corsivo (Ctrl+I) e il grassetto (Ctrl+B) si possono usare, ma con misura.'}),
-    B('transition','STACCO SU:',{note:'STACCO SU = cambio netto di inquadratura (in inglese CUT TO:). Molti sceneggiatori moderni lo omettono: una nuova intestazione implica già lo stacco.'}),
+    B('transition','STACCO SU:',{note:'STACCO SU = il normale cambio di inquadratura (in inglese CUT TO:). Molti sceneggiatori moderni lo omettono: una nuova intestazione implica già lo stacco. Passa con il mouse su una transizione per vedere un post-it con la spiegazione.'}),
     B('scene','INT. SALA D\'ATTESA - CONTINUO',{col:'#e9973f',syn:'Marco timbra il biglietto della nonna di Giulia.',note:'INT. = interno (al chiuso). CONTINUO = l\'azione prosegue senza salti di tempo dalla scena precedente.'}),
     B('action','Panche di legno consumate, una stufa spenta, un calendario fermo al novembre 2015. Marco appende la lanterna a un chiodo.'),
     B('character','MARCO'),B('dialogue','Lei non è la prima. Ogni tanto qualcuno trova un vecchio biglietto in un cassetto e pensa che valga ancora.'),
@@ -1099,9 +1274,38 @@ function SAMPLE(){
     B('dialogue','Io lo so.'),
     B('action','Un lungo silenzio. Marco prende il timbro dal bancone, lo bagna nell\'inchiostro e timbra il biglietto. <b>TUMP.</b>',{note:'I suoni importanti si possono scrivere in maiuscolo o grassetto, così il reparto suono li nota subito.'}),
     B('action','Da lontano, impossibile, arriva il fischio di un treno.'),
-    B('transition','STACCO SU:'),
+    B('scene','INT. CENTRALE OPERATIVA DELLE FERROVIE - NOTTE',{col:'#d86bb3',syn:'In centrale vedono in diretta un treno che non esiste.',note:'Nuovo luogo = nuova scena. Qui non c\'è STACCO SU: prima: l\'intestazione basta. Quando cambiare scena? Ogni volta che cambia il luogo o salta il tempo.'}),
+    B('action','Una sala in penombra piena di monitor. Telefoni che squillano, il brusio di una dozzina di operatori del turno di notte.',{note:'CHIACCHIERICCIO. Il brusio di sottofondo si descrive nell\'azione: non servono battute.'}),
+    B('action','ANNA (45) e PIETRO (28) fissano lo stesso schermo: la telecamera di sorveglianza della stazione di provincia, in diretta.'),
+    B('shot','SUL MONITOR',{note:'Ciò che si vede su uno schermo (telefono, TV, telecamera, una diretta) si introduce con un\'INQUADRATURA: SUL MONITOR, SULLO SCHERMO DEL TELEFONO… Così è chiaro che non siamo fisicamente lì.'}),
+    B('action','Bianco e nero, a scatti: un treno illuminato fermo al binario uno. Sulla banchina, Giulia sale a bordo.'),
+    B('character','ANNA & PIETRO',{note:'ALL\'UNISONO. Più personaggi che dicono la stessa battuta: i nomi uniti da & nel personaggio (o «E»), e la parentetica (insieme). Nelle statistiche la battuta conta per entrambi.'}),
+    B('paren','(insieme)'),
+    B('dialogue','Quello non è in orario.'),
+    B('character','ANNA',{note:'DIALOGO DOPPIO, prima colonna. Questa battuta e la successiva si parlano sopra: in stampa vengono affiancate.'}),
+    B('paren','(al telefono)',{note:'PARENTETICA: brevissima, in minuscolo. Serve a dire a chi si parla (a Marco), come (sottovoce), una pausa (pausa) o un piccolo gesto. Le azioni lunghe vanno nell\'azione.'}),
+    B('dialogue','Centrale a stazione, rispondete. Avete un convoglio non programmato al binario uno.'),
+    B('character','PIETRO',{dual:'1',note:'DIALOGO DOPPIO, seconda colonna. Si attiva mettendosi sul personaggio e premendo Ctrl+D (oppure Altro… → Dialogo doppio). Ripeti Ctrl+D per toglierlo.'}),
+    B('paren','(alla radio)'),
+    B('dialogue','Treno senza numero, qui centrale. Identificatevi, prego.'),
+    B('shot','MONTAGGIO ALTERNATO - CENTRALE / STAZIONE',{note:'MONTAGGIO ALTERNATO (in inglese INTERCUT). Presentati i due luoghi, si salta dall\'uno all\'altro senza riscrivere ogni volta l\'intestazione: ideale per telefonate e dirette.'}),
+    B('action','In stazione, Marco solleva la cornetta del vecchio telefono di servizio.'),
+    B('character','MARCO',{note:'Al telefono, ma lo vediamo: niente estensione. Se si sentisse solo la voce dall\'altro capo, sarebbe MARCO (AL TELEFONO).'}),
+    B('dialogue','Qui stazione. Nessun convoglio. Andate a dormire.'),
+    B('character','ANNA'),
+    B('paren','(guardando il monitor)'),
+    B('dialogue','Lo stiamo vedendo adesso. In diretta.'),
+    B('action','Marco guarda il treno davanti a sé. Poi la telecamera sopra la porta. Le fa un piccolo saluto con la mano.'),
+    B('shot','SUL MONITOR'),
+    B('action','Marco saluta. Alle sue spalle, il binario è vuoto.'),
+    B('character','PIETRO'),
+    B('paren','(pausa)'),
+    B('dialogue','Lo segniamo come guasto della telecamera?'),
+    B('shot','FINE MONTAGGIO ALTERNATO'),
+    B('action','Sul monitor resta solo la luce gialla di un finestrino, ferma nel buio.'),
+    B('transition','RACCORDO SU:',{note:'RACCORDO (MATCH CUT): lega due inquadrature con una forma o un movimento simile. Qui la luce del finestrino sul monitor diventa la lampada dello scompartimento. Esempio celebre: in 2001: Odissea nello spazio l\'osso lanciato in aria diventa un\'astronave.'}),
     B('scene','INT./EST. TRENO IN CORSA - NOTTE',{col:'#8e6bd8',syn:'Sul treno Giulia trova il posto della nonna, ancora caldo.',note:'INT./EST. = la scena si svolge dentro e fuori insieme (tipico di auto e treni ripresi anche dall\'esterno).'}),
-    B('action','Il treno attraversa la campagna senza luci. Dentro, uno scompartimento illuminato da lampade gialle.'),
+    B('action','Una lampada gialla oscilla sul soffitto di uno scompartimento. Fuori, il treno attraversa la campagna senza luci.'),
     B('action','Giulia avanza nel corridoio. Gli scompartimenti sono tutti vuoti, tranne uno: un cappotto da donna piegato su un sedile, una tazza di tè che fuma ancora.'),
     B('character','GIULIA'),
     B('dialogue','Nonna?'),
@@ -1125,7 +1329,7 @@ function SAMPLE(){
   let saved=null;try{saved=await idbGet('doc');}catch(e){}
   if(!saved){try{saved=localStorage.getItem('scena-doc');}catch(e){}}
   let d=null;try{d=saved?JSON.parse(saved):null;}catch(e){}
-  S=defaults();loadDoc(d&&d.blocks?d:newDoc(true));
+  S=defaults();loadDoc(d&&d.blocks?d:newDoc(true));applyUi();
   document.fonts.ready.then(()=>update(true));
 })();
 </script>
