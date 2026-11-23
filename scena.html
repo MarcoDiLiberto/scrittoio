@@ -48,6 +48,23 @@ select option{background:#2a2622;color:var(--fg);font-family:var(--mono)}
 #zVal{font:700 12px var(--mono);color:var(--mut);min-width:40px;text-align:center}
 
 #main{flex:1;display:flex;min-height:0}
+/* --- fogli: più copioni aperti --- */
+#sheets{flex:none;display:flex;align-items:flex-end;gap:3px;padding:7px 12px 0;background:#121010;border-bottom:3px solid var(--paper);overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+#sheets .sh{flex:none;display:flex;align-items:center;gap:6px;max-width:230px;padding:7px 6px 6px 12px;border-radius:9px 9px 0 0;background:linear-gradient(#2e2a25,#24211d);color:var(--mut);font:700 11.5px var(--mono);letter-spacing:.02em;cursor:pointer;white-space:nowrap;box-shadow:inset 0 1px #ffffff12;user-select:none;transition:color .15s}
+#sheets .sh span{overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
+#sheets .sh b{font:400 16px/1 var(--ui);opacity:.45;padding:0 4px 1px;border-radius:4px}
+#sheets .sh b:hover{opacity:1;background:#0003}
+#sheets .sh:not(.on):hover{color:var(--fg)}
+#sheets .sh.on{background:var(--paper);color:var(--ink);box-shadow:none}
+#sheets .sh.on b:hover{background:#0000001a}
+#sheets button{flex:none;padding:5px 10px 4px;margin:0 0 5px 4px;font-size:12px}
+#sheets .sp{flex:1;min-width:10px}
+body.focus #sheets{opacity:.1}body.focus #sheets:hover{opacity:1}
+.rec{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.rec:hover{background:#0000000a}.rec.cur{box-shadow:inset 3px 0 0 var(--red)}
+.rec b{display:block;font:700 13.5px var(--mono);text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec span{font-size:12px;color:var(--mut)}.rec i{font-style:normal;color:var(--red)}
+.rec button{padding:6px 10px}
 /* --- schedario laterale --- */
 #nav{width:262px;flex:none;display:flex;flex-direction:column;min-height:0;background:linear-gradient(90deg,#1b1815,#171411);border-right:1px solid #000;box-shadow:inset -1px 0 #ffffff08}
 .tabs{display:flex;gap:4px;padding:12px 10px 0;border-bottom:3px solid var(--paper)}
@@ -233,7 +250,7 @@ kbd{display:inline-block;background:#fff;border:1px solid #cfc3aa;border-bottom-
 <body class="scnum">
 <header>
   <div class="grp"><a class="logo" href="./" title="Torna allo scrittoio">SCENA</a></div>
-  <div class="grp"><button id="bNew">Nuovo</button><button id="bSample" title="Apre una sceneggiatura di esempio con note che spiegano ogni elemento">Esempio</button><button id="bOpen" title="Apre .scena, .fdx (Final Draft), .fountain, .txt">Apri…</button><button id="bSave" title="Ctrl+S">Salva</button>
+  <div class="grp"><button id="bNew" title="Nuovo copione in un nuovo foglio">Nuovo</button><button id="bSample" title="Apre una sceneggiatura di esempio con note che spiegano ogni elemento">Esempio</button><button id="bOpen" title="Apre .scena, .fdx (Final Draft), .fountain, .txt">Apri…</button><button id="bSave" title="Ctrl+S">Salva</button>
     <select id="bExport"><option value="">Esporta…</option><option value="pdf">PDF (stampa)</option><option value="fdx">Final Draft (.fdx)</option><option value="fountain">Fountain (.fountain)</option><option value="txt">Testo impaginato (.txt)</option></select></div>
   <div class="grp"><button id="bUndo" title="Annulla (Ctrl+Z)">↶</button><button id="bRedo" title="Ripeti (Ctrl+Y)">↷</button></div>
   <div class="grp"><select id="elType" title="Elemento corrente (Alt+1…8)"></select></div>
@@ -243,6 +260,7 @@ kbd{display:inline-block;background:#fff;border:1px solid #cfc3aa;border-bottom-
   <div class="grp"><button id="bSet" title="Impostazioni: formato, convenzioni, numeri di scena, revisioni">⚙</button><button id="bFocus" title="Modalità concentrazione: nasconde tutto tranne il foglio (Ctrl+.)">Focus</button><button id="bSound" title="Suoni della macchina da scrivere">♪</button></div>
   <div class="grp"><button id="bHelp" title="Guida e scorciatoie">?</button></div>
 </header>
+<div id="sheets"></div>
 <div id="main">
   <aside id="nav">
     <div class="tabs"><button data-tab="scenes" class="on">Scene</button><button data-tab="chars">Personaggi</button><button data-tab="notes">Note</button></div>
@@ -331,6 +349,14 @@ kbd{display:inline-block;background:#fff;border:1px solid #cfc3aa;border-bottom-
     <label class="chk"><input type="checkbox" id="rAll" checked> Anche dentro azioni e dialoghi (parola intera)</label>
   </div>
   <div class="btns"><button value="cancel">Annulla</button><button value="ok" class="pri">Rinomina</button></div>
+</form></dialog>
+
+<dialog id="dRecent"><form method="dialog">
+  <h3>Copioni recenti</h3>
+  <input id="recQ" placeholder="Cerca un copione…" style="width:100%;margin-bottom:6px" autocomplete="off">
+  <div id="recList" style="max-height:52vh;overflow:auto"></div>
+  <p class="note">I copioni restano salvati in questo browser, anche chiusi. Per portarli su un altro computer o tenerne una copia sicura usa Salva.</p>
+  <div class="btns"><button value="cancel">Chiudi</button></div>
 </form></dialog>
 
 <dialog id="dReport"><form method="dialog">
@@ -430,7 +456,8 @@ const I18R=[
 Object.assign(I18N,{'scene':'scenes','personaggi parlanti':'speaking characters','parole':'words','interni / esterni':'interiors / exteriors','giorno / notte':'day / night','lunghezza media scena':'average scene length','luoghi':'locations',
  'Nome':'Name','Battute':'Lines','Entra a p.':'First on p.','Luoghi':'Locations','Luogo':'Location','Pagine':'Pages','Intestazione':'Heading','Pag.':'Page'});
 I18R.push([/^pagine · ~(\d+) min$/,'pages · ~$1 min']);
-const I18_SKIP='#ed,#pvPages,#printRoot,#helpBody,#gloss,#pop';
+Object.assign(I18N,{'Copioni recenti':'Recent scripts','Cerca un copione…':'Search scripts…','I copioni restano salvati in questo browser, anche chiusi. Per portarli su un altro computer o tenerne una copia sicura usa Salva.':'Scripts stay saved in this browser, even when closed. To move them to another computer or keep a safe copy, use Save.','Nuovo copione in un nuovo foglio':'New script in a new sheet'});
+const I18_SKIP='#ed,#pvPages,#printRoot,#helpBody,#gloss,#pop,#sheets,#recList';
 const I18_ORIG=new WeakMap();
 function trText(s){const m=String(s).match(/^(\s*)([\s\S]*?)(\s*)$/),core=m[2];if(!core)return null;let r=I18N[core];if(r==null&&TYPE_EN[core])r=TYPE_EN[core];
   if(r==null)for(const[re,to]of I18R){if(re.test(core)){r=core.replace(re,to);break;}}return r==null?null:m[1]+r+m[3];}
@@ -444,7 +471,7 @@ function trNode(n){if(n.nodeType===3){const p=n.parentElement;if(!p||p.closest(I
   if(n.nodeType!==1||n.closest(I18_SKIP))return;trAttrs(n);for(const c of n.childNodes)trNode(c);}
 new MutationObserver(ms=>{if(uiLang!=='en')return;for(const m of ms){if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trAttrs(m.target);else m.addedNodes.forEach(trNode);}})
   .observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','placeholder']});
-function applyUi(){document.documentElement.lang=uiLang;document.body.classList.toggle('en',uiLang==='en');trNode(document.body);renderHelp();hideGloss();}
+function applyUi(){document.documentElement.lang=uiLang;if(typeof renderSheets==='function')renderSheets();document.body.classList.toggle('en',uiLang==='en');trNode(document.body);renderHelp();hideGloss();}
 
 /* ---------------- glossario: transizioni e situazioni comuni ---------------- */
 const GLOSS=[
@@ -489,8 +516,8 @@ function hideGloss(){glEl.style.display='none';}
 function glossNearPop(v){const g=glossFor(v);if(!g)return hideGloss();const r=pop.getBoundingClientRect();if(!r.width)return;
   const right=r.right+340<innerWidth;showGloss(g,right?r.right+14:r.left-14,r.top,!right);}
 function renderHelp(){const en=uiLang==='en';
-  const keys=en?[['Enter','new element, already of the right type: action after a scene, dialogue after a character, the next character after dialogue…'],['Tab','change element: Action → Character → Transition → Scene; Dialogue ⇄ Parenthetical. Shift+Tab goes back. On an empty element Tab never fills in a suggestion.'],['Alt+1…8','Scene · Action · Character · Parenthetical · Dialogue · Transition · Shot · Centered'],['↓ then Enter','pick a suggestion (characters, locations, times, transitions, extensions like (V.O.)). If you already typed some letters, Enter/Tab completes.'],['Ctrl+D','dual dialogue: the current speech and the one next to it print side by side'],['&','in a character cue: MARCO & GIULIA speak in unison'],['(','at the start of a dialogue line creates a parenthetical'],['Ctrl+B / I / U','bold, italic, underline'],['Ctrl+F / Ctrl+H','find / replace'],['Ctrl+G','go to page'],['Ctrl+M','note on the current element'],['Ctrl+P','print preview / PDF'],['Ctrl+S','save the project (.scena)'],['Ctrl+.','focus mode'],['Paste','plain-text screenplays (also from PDF or in Fountain) are recognized and formatted.']]
-   :[['Invio','nuovo elemento, già del tipo giusto: dopo la scena l\'azione, dopo il personaggio il dialogo, dopo il dialogo il prossimo personaggio…'],['Tab','cambia elemento: Azione → Personaggio → Transizione → Scena; Dialogo ⇄ Parentetica. Maiusc+Tab torna indietro. Su un elemento vuoto Tab non inserisce mai un suggerimento.'],['Alt+1…8','Scena · Azione · Personaggio · Parentetica · Dialogo · Transizione · Inquadratura · Centrato'],['↓ poi Invio','scegli un suggerimento (personaggi, luoghi, momenti, transizioni, estensioni come (V.O.)). Se hai già scritto qualche lettera, Invio/Tab completa.'],['Ctrl+D','dialogo doppio: la battuta corrente e quella accanto vengono stampate affiancate'],['&','nel personaggio: MARCO & GIULIA parlano all\'unisono'],['(','all\'inizio di un dialogo crea una parentetica'],['Ctrl+B / I / U','grassetto, corsivo, sottolineato'],['Ctrl+F / Ctrl+H','trova / sostituisci'],['Ctrl+G','vai alla pagina'],['Ctrl+M','nota sull\'elemento corrente'],['Ctrl+P','anteprima di stampa / PDF'],['Ctrl+S','salva il progetto (.scena)'],['Ctrl+.','modalità concentrazione'],['Incolla','un copione in testo semplice (anche da PDF o in Fountain) viene riconosciuto e formattato.']];
+  const keys=en?[['Enter','new element, already of the right type: action after a scene, dialogue after a character, the next character after dialogue…'],['Tab','change element: Action → Character → Transition → Scene; Dialogue ⇄ Parenthetical. Shift+Tab goes back. On an empty element Tab never fills in a suggestion.'],['Alt+1…8','Scene · Action · Character · Parenthetical · Dialogue · Transition · Shot · Centered'],['↓ then Enter','pick a suggestion (characters, locations, times, transitions, extensions like (V.O.)). If you already typed some letters, Enter/Tab completes.'],['Ctrl+D','dual dialogue: the current speech and the one next to it print side by side'],['&','in a character cue: MARCO & GIULIA speak in unison'],['(','at the start of a dialogue line creates a parenthetical'],['Ctrl+B / I / U','bold, italic, underline'],['Ctrl+F / Ctrl+H','find / replace'],['Ctrl+G','go to page'],['Ctrl+M','note on the current element'],['Ctrl+P','print preview / PDF'],['Ctrl+S','save the project (.scena)'],['Ctrl+.','focus mode'],['Alt+PgUp / PgDn','previous / next sheet. Double-click a sheet to rename it, middle-click to close it; closed scripts stay in Recent.'],['Paste','plain-text screenplays (also from PDF or in Fountain) are recognized and formatted.']]
+   :[['Invio','nuovo elemento, già del tipo giusto: dopo la scena l\'azione, dopo il personaggio il dialogo, dopo il dialogo il prossimo personaggio…'],['Tab','cambia elemento: Azione → Personaggio → Transizione → Scena; Dialogo ⇄ Parentetica. Maiusc+Tab torna indietro. Su un elemento vuoto Tab non inserisce mai un suggerimento.'],['Alt+1…8','Scena · Azione · Personaggio · Parentetica · Dialogo · Transizione · Inquadratura · Centrato'],['↓ poi Invio','scegli un suggerimento (personaggi, luoghi, momenti, transizioni, estensioni come (V.O.)). Se hai già scritto qualche lettera, Invio/Tab completa.'],['Ctrl+D','dialogo doppio: la battuta corrente e quella accanto vengono stampate affiancate'],['&','nel personaggio: MARCO & GIULIA parlano all\'unisono'],['(','all\'inizio di un dialogo crea una parentetica'],['Ctrl+B / I / U','grassetto, corsivo, sottolineato'],['Ctrl+F / Ctrl+H','trova / sostituisci'],['Ctrl+G','vai alla pagina'],['Ctrl+M','nota sull\'elemento corrente'],['Ctrl+P','anteprima di stampa / PDF'],['Ctrl+S','salva il progetto (.scena)'],['Ctrl+.','modalità concentrazione'],['Alt+PagSu / PagGiù','foglio precedente / successivo. Doppio clic su un foglio per rinominarlo, clic con la rotellina per chiuderlo; i copioni chiusi restano in Recenti.'],['Incolla','un copione in testo semplice (anche da PDF o in Fountain) viene riconosciuto e formattato.']];
   $('#helpBody').innerHTML=`<h3>${en?'Writing with Scena':'Scrivere con Scena'}</h3><div class="keys">${keys.map(([k,v])=>`<kbd>${esc(k)}</kbd><span>${esc(v)}</span>`).join('')}</div>
   <h4>${en?'Transitions':'Transizioni'}</h4><p class="note">${en?'Hover over a transition in the script to see this card on a sticky note.':'Passa con il mouse su una transizione nel copione per vedere questa spiegazione su un post-it.'}</p>
   <div class="gl">${GLOSS.map(g=>{const c=g[uiLang]||g.it;return`<b>${esc(uiLang==='en'?(g.k.find(k=>/TO:|FADE|THE END/.test(k))||g.k[0]):g.k[0])}</b><span>${esc(c.d)}<span class="ex">${esc(c.x)}</span></span>`;}).join('')}</div>
@@ -1118,14 +1145,60 @@ function toTxt(){
 
 /* ---------------- file ---------------- */
 function newDoc(sample){return{v:1,title:{title:sample?'L\'ultima corsa':'',credit:'Scritto da',author:sample?'Il tuo nome':'',source:'',draft:'',contact:'',show:true},settings:defaults(),blocks:sample?SAMPLE():[{t:'scene',h:''}]};}
-function loadDoc(d){
-  doc=d;doc.title=Object.assign(newDoc().title,d.title||{});S=doc.settings=Object.assign(defaults(),d.settings||{});
-  renderEditor(d.blocks||[]);applySettings();undoS=[];redoS=[];lastPages=0;update(true);
-  setTimeout(()=>{ed.focus({preventScroll:true});setCaret(ed.firstElementChild,0);updateCur();$('#scroll').scrollTop=0;},30);
+function loadDoc(d,memo){
+  doc=d;doc.id=doc.id||newId();doc.title=Object.assign(newDoc().title,d.title||{});S=doc.settings=Object.assign(defaults(),d.settings||{});
+  renderEditor(d.blocks||[]);applySettings();undoS=memo?memo.undoS:[];redoS=memo?memo.redoS:[];fileHandle=memo?memo.fileHandle||null:null;lastPages=0;update(true);
+  setTimeout(()=>{ed.focus({preventScroll:true});if(memo&&memo.c)setCaret(ed.children[memo.c.i]||ed.lastElementChild,memo.c.o);else setCaret(ed.firstElementChild,0);updateCur();$('#scroll').scrollTop=memo?memo.scroll||0:0;},30);
 }
-function docForSave(){return JSON.stringify({v:1,title:doc.title,settings:S,blocks:readBlocks()});}
+function docForSave(){return JSON.stringify({v:1,id:doc.id,title:doc.title,settings:S,blocks:readBlocks()});}
 let asT=0;
-function autosave(){clearTimeout(asT);asT=setTimeout(()=>{const j=docForSave();try{localStorage.setItem('scena-doc',j);}catch(e){}idbSet('doc',j).catch(()=>{});},800);}
+function autosave(){clearTimeout(asT);asT=setTimeout(saveNow,800);}
+
+/* ---------------- fogli: archivio di più copioni nel browser ---------------- */
+const newId=()=>'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+let LIB={docs:[],open:[],cur:''};const MEMO=new Map();
+function libEntry(id){let e=LIB.docs.find(x=>x.id===id);if(!e){e={id,title:'',updated:Date.now()};LIB.docs.push(e);}return e;}
+function libSave(){const j=JSON.stringify(LIB);try{localStorage.setItem('scena-lib',j);}catch(e){}idbSet('lib',j).catch(()=>{});}
+function storeDoc(id,j){try{localStorage.setItem('scena-doc:'+id,j);}catch(e){}idbSet('doc:'+id,j).catch(()=>{});}
+async function idbDel(k){try{const db=await idb();db.transaction('kv','readwrite').objectStore('kv').delete(k);}catch(e){}}
+async function readDoc(id){let s=null;try{s=await idbGet('doc:'+id);}catch(e){}if(!s){try{s=localStorage.getItem('scena-doc:'+id);}catch(e){}}try{return s?JSON.parse(s):null;}catch(e){return null;}}
+function docTitle(d){const t=(d.title&&d.title.title||'').trim();if(t)return t;const bl=d===doc?model:(d.blocks||[]);const sc=bl.find(b=>b.t==='scene'&&plain(b.h).trim());return sc?plain(sc.h).trim():_t('Senza titolo','Untitled');}
+function saveNow(){clearTimeout(asT);if(!doc)return;storeDoc(doc.id,docForSave());const e=libEntry(doc.id);e.title=docTitle(doc);e.updated=Date.now();e.pages=PG?PG.pages.length:1;e.scenes=model.filter(b=>b.t==='scene').length;LIB.cur=doc.id;libSave();renderSheets();}
+function remember(){if(doc){saveNow();MEMO.set(doc.id,{undoS,redoS,fileHandle,scroll:$('#scroll').scrollTop,c:state().c});}}
+async function switchTo(id){if(doc&&id===doc.id)return;remember();
+  const d=await readDoc(id);if(!d){toast(_t('Copione non trovato','Script not found'));LIB.docs=LIB.docs.filter(x=>x.id!==id);LIB.open=LIB.open.filter(x=>x!==id);libSave();renderSheets();return;}
+  d.id=id;if(!LIB.open.includes(id))LIB.open.push(id);LIB.cur=id;$('#preview').classList.remove('on');$('#cards').classList.remove('on');
+  loadDoc(d,MEMO.get(id));libSave();renderSheets();}
+function openNew(d,handle){remember();d.id=newId();libEntry(d.id);const at=LIB.open.indexOf(doc?doc.id:'');LIB.open.splice(at<0?LIB.open.length:at+1,0,d.id);LIB.cur=d.id;
+  $('#preview').classList.remove('on');$('#cards').classList.remove('on');loadDoc(d,handle?{undoS:[],redoS:[],fileHandle:handle,scroll:0}:null);saveNow();}
+async function closeSheet(id){const i=LIB.open.indexOf(id);if(i<0)return;const wasCur=doc&&id===doc.id;if(wasCur)saveNow();
+  LIB.open.splice(i,1);MEMO.delete(id);
+  if(wasCur){doc=null;if(LIB.open.length)await switchTo(LIB.open[Math.min(i,LIB.open.length-1)]);else openNew(newDoc(false));}
+  libSave();renderSheets();if($('#dRecent').open)renderRecent();toast(_t('Foglio chiuso: lo ritrovi in «Recenti»','Sheet closed: you can find it in "Recent"'));}
+function renderSheets(){const box=$('#sheets');if(!box)return;
+  box.innerHTML=LIB.open.map(id=>{const e=LIB.docs.find(x=>x.id===id)||{title:''};const nm=e.title||_t('Senza titolo','Untitled');
+    return`<div class="sh${doc&&id===doc.id?' on':''}" data-id="${id}" title="${esc(nm)} · ${_t('doppio clic per rinominare','double-click to rename')}"><span>${esc(nm)}</span><b data-x="${id}" title="${_t('Chiudi il foglio (resta in Recenti)','Close sheet (stays in Recent)')}">×</b></div>`;}).join('')
+    +`<button type="button" id="shAdd" title="${_t('Nuovo copione in un nuovo foglio','New script in a new sheet')}">+</button><span class="sp"></span><button type="button" id="shRecent" title="${_t('Tutti i copioni salvati in questo browser','All scripts saved in this browser')}">🕘 ${_t('Recenti','Recent')} (${LIB.docs.length})</button>`;
+  const on=box.querySelector('.sh.on');if(on&&(on.offsetLeft<box.scrollLeft||on.offsetLeft+on.offsetWidth>box.scrollLeft+box.clientWidth))on.scrollIntoView({inline:'nearest',block:'nearest'});}
+async function renameSheet(id){if(!doc||id!==doc.id)await switchTo(id);const v=await ask(_t('Titolo del copione','Script title'),_t('È anche il titolo sul frontespizio.','It is also the title on the title page.'),{input:true,value:doc.title.title||docTitle(doc),ok:_t('Rinomina','Rename')});
+  if(v==null||!v.trim())return;doc.title.title=v.trim();saveNow();}
+$('#sheets').addEventListener('click',e=>{const x=e.target.closest('[data-x]');if(x){e.stopPropagation();closeSheet(x.dataset.x);return;}
+  if(e.target.closest('#shAdd'))return $('#bNew').click();if(e.target.closest('#shRecent'))return openRecent();
+  const s=e.target.closest('.sh');if(s)switchTo(s.dataset.id);});
+$('#sheets').addEventListener('auxclick',e=>{const s=e.target.closest('.sh');if(s&&e.button===1){e.preventDefault();closeSheet(s.dataset.id);}});
+$('#sheets').addEventListener('dblclick',e=>{const s=e.target.closest('.sh');if(s&&!e.target.closest('[data-x]'))renameSheet(s.dataset.id);});
+function ago(t){const s=(Date.now()-t)/1000;if(s<60)return _t('adesso','just now');const m=Math.round(s/60);if(m<60)return _t(m+' min fa',m+' min ago');const hh=Math.round(m/60);if(hh<24)return _t(hh+(hh===1?' ora fa':' ore fa'),hh+' h ago');const d=Math.round(hh/24);if(d<7)return _t(d+(d===1?' giorno fa':' giorni fa'),d+(d===1?' day ago':' days ago'));return new Date(t).toLocaleDateString(uiLang==='en'?'en-GB':'it-IT');}
+function renderRecent(){const q=($('#recQ').value||'').toLowerCase().trim();const list=[...LIB.docs].sort((a,b)=>b.updated-a.updated).filter(e=>!q||(e.title||'').toLowerCase().includes(q));
+  $('#recList').innerHTML=list.map(e=>`<div class="rec${doc&&e.id===doc.id?' cur':''}" data-id="${e.id}"><div style="min-width:0"><b>${esc(e.title||_t('Senza titolo','Untitled'))}</b><span>${ago(e.updated)}${e.pages?' · '+e.pages+' '+_t(e.pages===1?'pagina':'pagine',e.pages===1?'page':'pages'):''}${e.scenes!=null?' · '+e.scenes+' '+_t(e.scenes===1?'scena':'scene',e.scenes===1?'scene':'scenes'):''}${LIB.open.includes(e.id)?' · <i>'+_t('aperto in un foglio','open in a sheet')+'</i>':''}</span></div><button type="button" class="pri" data-open="${e.id}">${_t('Apri','Open')}</button><button type="button" data-del="${e.id}" title="${_t('Elimina da questo browser','Delete from this browser')}">🗑</button></div>`).join('')||`<div class="note" style="padding:10px">${_t('Nessun copione trovato.','No scripts found.')}</div>`;}
+function openRecent(){saveNow();$('#recQ').value='';renderRecent();$('#dRecent').showModal();setTimeout(()=>$('#recQ').focus(),20);}
+$('#recQ').addEventListener('input',renderRecent);
+$('#recQ').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const r=$('#recList .rec');if(r){$('#dRecent').close();switchTo(r.dataset.id);}}});
+$('#recList').addEventListener('click',async e=>{const d=e.target.closest('[data-del]');if(d){e.stopPropagation();await deleteDoc(d.dataset.del);return;}
+  const r=e.target.closest('.rec');if(r){$('#dRecent').close();switchTo(r.dataset.id);}});
+async function deleteDoc(id){const e=LIB.docs.find(x=>x.id===id);if(!e)return;
+  const ok=await ask(_t('Eliminare «'+(e.title||'Senza titolo')+'»?','Delete "'+(e.title||'Untitled')+'"?'),_t('Il copione verrà cancellato da questo browser. Se non ne hai una copia su file, non potrai più recuperarlo.','The script will be deleted from this browser. Without a copy on file you will not be able to get it back.'),{ok:_t('Elimina','Delete'),noFocus:true});
+  if(!ok)return;if(LIB.open.includes(id))await closeSheet(id);LIB.docs=LIB.docs.filter(x=>x.id!==id);if(!LIB.docs.length&&doc)libEntry(doc.id);libSave();
+  try{localStorage.removeItem('scena-doc:'+id);}catch(_){}idbDel('doc:'+id);renderSheets();renderRecent();toast(_t('Copione eliminato','Script deleted'));}
 function idb(){return new Promise((res,rej)=>{const r=indexedDB.open('scena',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
 async function idbSet(k,v){const db=await idb();return new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
 async function idbGet(k){const db=await idb();return new Promise((res,rej)=>{const r=db.transaction('kv').objectStore('kv').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
@@ -1137,9 +1210,9 @@ async function saveDoc(as){
 async function openFileObj(f){
   const txt=await f.text(),ext=(f.name.split('.').pop()||'').toLowerCase();
   try{
-    if(ext==='scena'||ext==='json'){const o=JSON.parse(txt);if(!o.blocks)throw new Error('formato sconosciuto');loadDoc(o);}
-    else if(ext==='fdx'){const r=parseFdx(txt);const d=newDoc();d.blocks=r.blocks;Object.assign(d.title,r.title);loadDoc(d);}
-    else{const r=parseFountain(txt);const d=newDoc();d.blocks=r.blocks;const t=r.title;d.title.title=(t.title||'').replace(/[_*]/g,'');if(t.credit)d.title.credit=t.credit;d.title.author=t.author||t.authors||'';d.title.source=t.source||'';d.title.draft=t['draft date']||'';d.title.contact=t.contact||'';if(!d.title.title)d.title.title=f.name.replace(/\.[^.]+$/,'');loadDoc(d);}
+    if(ext==='scena'||ext==='json'){const o=JSON.parse(txt);if(!o.blocks)throw new Error('formato sconosciuto');openNew(o);}
+    else if(ext==='fdx'){const r=parseFdx(txt);const d=newDoc();d.blocks=r.blocks;Object.assign(d.title,r.title);openNew(d);}
+    else{const r=parseFountain(txt);const d=newDoc();d.blocks=r.blocks;const t=r.title;d.title.title=(t.title||'').replace(/[_*]/g,'');if(t.credit)d.title.credit=t.credit;d.title.author=t.author||t.authors||'';d.title.source=t.source||'';d.title.draft=t['draft date']||'';d.title.contact=t.contact||'';if(!d.title.title)d.title.title=f.name.replace(/\.[^.]+$/,'');openNew(d);}
     fileHandle=null;toast('Aperto: '+f.name);
   }catch(e){ask('Impossibile aprire il file',e.message,{alert:true});}
 }
@@ -1152,7 +1225,7 @@ $('#bExport').onchange=()=>{const v=$('#bExport').value;$('#bExport').value='';c
   else if(v==='fountain'){download(toFountain(),n+'.fountain','text/plain');toast('Esportato in Fountain');}
   else if(v==='txt'){download(toTxt(),n+'.txt','text/plain');}};
 $('#scroll').addEventListener('dragover',e=>e.preventDefault());
-$('#scroll').addEventListener('drop',async e=>{const f=e.dataTransfer.files[0];if(f&&/\.(scena|fdx|fountain|txt|json)$/i.test(f.name)){e.preventDefault();if(await ask('Aprire '+f.name+'?','Il copione attuale verrà sostituito (salvalo prima se serve).',{ok:'Apri'}))openFileObj(f);}});
+$('#scroll').addEventListener('drop',async e=>{const f=e.dataTransfer.files[0];if(f&&/\.(scena|fdx|fountain|txt|json)$/i.test(f.name)){e.preventDefault();openFileObj(f);}});
 
 /* ---------------- dialoghi ---------------- */
 function curBlock(){const c=caretInfo();return c?c.el:(curEl&&curEl.isConnected?curEl:null);}
@@ -1210,8 +1283,8 @@ $('#dFind').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(
 $('#elType').innerHTML=ORDER.map((t,k)=>`<option value="${t}">${TYPES[t].n}   (Alt+${k+1})</option>`).join('');
 $('#elType').onchange=()=>{const el=curBlock();if(!el)return;structural();setType(el,$('#elType').value);ed.focus();setCaret(el,textOf(el).length);after();};
 $('#bUndo').onclick=undo;$('#bRedo').onclick=redo;$('#bSave').onclick=()=>saveDoc(false);$('#bOpen').onclick=openDoc;
-$('#bSample').onclick=async()=>{if(!await ask('Sceneggiatura di esempio','Il copione attuale verrà sostituito dall\'esempio. Se non l\'hai salvato su file, salvalo prima.',{ok:'Apri l\'esempio'}))return;fileHandle=null;loadDoc(newDoc(true));navTab='notes';$$('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab==='notes'));renderNav();toast('Le parti evidenziate in giallo hanno una nota: elenco nella scheda "Note"');};
-$('#bNew').onclick=async()=>{if(!await ask('Nuovo copione','Il copione attuale verrà sostituito da una pagina bianca. Se non l\'hai salvato su file, salvalo prima.',{ok:'Crea nuovo copione'}))return;fileHandle=null;loadDoc(newDoc(false));toast('Nuovo copione: inizia scrivendo INT. o EST.');};
+$('#bSample').onclick=()=>{openNew(newDoc(true));navTab='notes';$$('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab==='notes'));renderNav();toast('Le parti evidenziate in giallo hanno una nota: elenco nella scheda "Note"');};
+$('#bNew').onclick=()=>{openNew(newDoc(false));toast(_t('Nuovo copione in un nuovo foglio: inizia scrivendo INT. o EST.','New script in a new sheet: start by typing INT. or EXT.'));};
 $('#bMore').onchange=()=>{const v=$('#bMore').value;$('#bMore').value='';if(v==='dual'){ed.focus({preventScroll:true});if(curEl&&curEl.isConnected)setCaret(curEl,textOf(curEl).length);toggleDual();}else if(v)$('#'+v).click();};
 $('#bSound').onclick=()=>{S.sound=!S.sound;soundUi();autosave();if(S.sound){sfx('key');toast('Suoni della macchina da scrivere attivi');}ed.focus({preventScroll:true});};
 $('#bFocus').onclick=()=>{document.body.classList.toggle('focus');$('#bFocus').classList.toggle('on');setTimeout(()=>{sizePage();drawBreaks();},50);};
@@ -1225,6 +1298,7 @@ document.addEventListener('keydown',e=>{
   else if(mod&&k==='h'){e.preventDefault();openFind(true);}
   else if(mod&&k==='m'){e.preventDefault();openNote();}
   else if(mod&&k==='d'){e.preventDefault();toggleDual();}
+  else if(e.altKey&&(e.key==='PageDown'||e.key==='PageUp')&&LIB.open.length>1){e.preventDefault();const i=LIB.open.indexOf(doc.id),n=LIB.open.length;switchTo(LIB.open[(i+(e.key==='PageDown'?1:n-1))%n]);}
   else if(mod&&k==='.'){e.preventDefault();$('#bFocus').click();}
   else if(mod&&k==='g'){e.preventDefault();ask('Vai alla pagina','Numero di pagina (1–'+(PG?PG.pages.length:1)+'):',{input:true,ok:'Vai',noFocus:true}).then(v=>{const p=+v;if(p>=1){update(true);if(p===1)gotoBlock(0);else{const b=PG.breaks[Math.min(p,PG.pages.length)-2];if(b)gotoBlock(b.bi);}}});}
   else if(mod&&!e.shiftKey&&k==='z'&&document.activeElement!==ed&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();undo();}
@@ -1234,7 +1308,7 @@ document.addEventListener('keydown',e=>{
 ed.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==='z'){e.preventDefault();undo();}},true);
 window.addEventListener('resize',()=>{hidePop();});
 $('#scroll').addEventListener('scroll',()=>hidePop());
-window.addEventListener('beforeunload',()=>{try{localStorage.setItem('scena-doc',docForSave());}catch(e){}});
+window.addEventListener('beforeunload',()=>{saveNow();});
 
 /* ---------------- copione di esempio ---------------- */
 function SAMPLE(){
@@ -1326,10 +1400,17 @@ function SAMPLE(){
 
 /* ---------------- avvio ---------------- */
 (async function init(){
-  let saved=null;try{saved=await idbGet('doc');}catch(e){}
-  if(!saved){try{saved=localStorage.getItem('scena-doc');}catch(e){}}
-  let d=null;try{d=saved?JSON.parse(saved):null;}catch(e){}
-  S=defaults();loadDoc(d&&d.blocks?d:newDoc(true));applyUi();
+  S=defaults();let lib=null;
+  try{lib=JSON.parse(await idbGet('lib')||'null');}catch(e){}
+  if(!lib){try{lib=JSON.parse(localStorage.getItem('scena-lib')||'null');}catch(e){}}
+  if(lib&&lib.docs&&lib.docs.length){LIB=lib;LIB.open=(LIB.open||[]).filter(id=>LIB.docs.some(x=>x.id===id));}
+  else{/* primo avvio, o copione salvato dalla versione precedente: diventa il primo foglio */
+    let saved=null;try{saved=await idbGet('doc');}catch(e){}if(!saved){try{saved=localStorage.getItem('scena-doc');}catch(e){}}
+    let d0=null;try{d0=saved?JSON.parse(saved):null;}catch(e){}if(!d0||!d0.blocks)d0=newDoc(true);
+    d0.id=newId();LIB={docs:[],open:[d0.id],cur:d0.id};const e0=libEntry(d0.id);e0.title=docTitle(d0);storeDoc(d0.id,JSON.stringify(d0));libSave();}
+  if(!LIB.open.length)LIB.open.push([...LIB.docs].sort((a,b)=>b.updated-a.updated)[0].id);
+  const cur=LIB.open.includes(LIB.cur)?LIB.cur:LIB.open[0];let d=await readDoc(cur);if(!d)d=newDoc(true);d.id=cur;LIB.cur=cur;
+  loadDoc(d);renderSheets();applyUi();
   document.fonts.ready.then(()=>update(true));
 })();
 </script>
