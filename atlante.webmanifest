@@ -1,0 +1,15 @@
+{
+  "name": "Atlante — il tuo mondo",
+  "short_name": "Atlante",
+  "description": "Wiki, mappe e cronologie per mondi di gioco di ruolo, romanzi e videogiochi. Funziona offline.",
+  "lang": "it",
+  "start_url": "./atlante.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#14110e",
+  "theme_color": "#1b1814",
+  "icons": [
+    { "src": "atlante-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "atlante-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

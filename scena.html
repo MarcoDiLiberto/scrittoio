@@ -222,6 +222,10 @@ input:focus,textarea:focus,dialog select:focus{outline:2px solid #d33a2c55;outli
 input[type=checkbox]{accent-color:var(--red);width:16px;height:16px}
 textarea{resize:vertical}
 .btns{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+/* nelle finestre di carta i pulsanti secondari sono tasti chiari con testo scuro */
+dialog button:not(.pri){color:#201c16;background:linear-gradient(#fffdf8,#ebe2cd);border:1px solid #c7b998;box-shadow:inset 0 1px #fff,inset 0 -2px #0000000f,0 2px 0 #b8a988,0 4px 8px #0000001f}
+dialog button:not(.pri):hover{background:linear-gradient(#fff,#f1e9d6);border-color:#a8987a}
+dialog button:not(.pri):active{box-shadow:inset 0 1px #fff,0 0 0 #0000,0 1px 2px #0002}
 .note{color:var(--mut);font-size:12.5px;line-height:1.55}
 table.rep{border-collapse:collapse;width:100%;font-size:12.5px}
 table.rep th,table.rep td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
